@@ -243,58 +243,6 @@ input {
     transition: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/*TABLE*/
-
-table {
-    width: 100%;
-    min-width: 400px;
-    border-spacing: 0;
-    border-color: #898f94;
-    border-style: ridge;
-    border-width: 1px;
-}
-
-thead {
-    background-color: #fafafb;
-}
-
-tr {
-    text-align: left;
-}
-
-th,
-td {
-    text-transform: capitalize;
-    padding: 15px 10px;
-    border-color: #8f9498;
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-}
-
-.table__pagination {
-    display: flex;
-    width: 100%;
-    justify-content: flex-end;
-    align-items: center;
-    margin-top: 20px;
-}
-
-.table__pagination-item {
-    margin-left: 10px;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-
-.table__pagination-item:hover {
-    color: #fff;
-    background-color: #62b4ff;
-}
-
 /*Select resource type*/
 
 .selectType{
@@ -305,7 +253,7 @@ td {
 /*React datepicker*/
 
 .datepicker{
-    border: 1px solid #090b0c;
+    border: 1px solid #878787;
 }
 
 

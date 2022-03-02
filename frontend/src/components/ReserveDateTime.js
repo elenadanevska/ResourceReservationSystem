@@ -5,22 +5,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 let times = [
-    "08:00 - 08:30",
-    "08:30 - 09:00",
-    "09:00 - 09:30",
-    "09:30 - 10:00",
-    "10:00 - 10:30",
-    "10:30 - 11:00",
-    "11:00 - 11:30",
-    "11:30 - 12:00",
-    "12:00 - 12:30",
-    "12:30 - 13:00",
-    "13:30 - 14:00",
-    "14:30 - 15:00",
-    "15:00 - 15:30",
-    "15:30 - 16:00",
-    "16:00 - 16:30",
-    "16:30 - 17:00",
+    "08:00 - 08:30", "08:30 - 09:00", "09:00 - 09:30", "09:30 - 10:00", "10:00 - 10:30", "10:30 - 11:00", "11:00 - 11:30", "11:30 - 12:00", "12:00 - 12:30", "12:30 - 13:00",
+    "13:30 - 14:00", "14:30 - 15:00", "15:00 - 15:30", "15:30 - 16:00", "16:00 - 16:30", "16:30 - 17:00",
 ];
 
 const TableButton = (props) => {
@@ -65,13 +51,35 @@ export default class ReserveDayTime extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            date: new Date(),
-            busy: ["08:30 - 09:00"],
-            owned: ["10:00 - 10:30"],
+            bookingDate: new Date(),
+            resourceName: "",
+            busy: [],
+            owned: [],
             reserve: [],
+            //id: this.props.match.params.id
+            id: this.props.id
         }
         this.selectDate = this.selectDate.bind(this);
         this.handleTimeSelect = this.handleTimeSelect.bind(this)
+    }
+
+    componentDidMount() {
+        Axios.get(`http://localhost:3001/reservations/${this.state.id}`, {
+            params: {
+                date: this.state.bookingDate,
+            }
+        }).then((response) => {
+            let reserved = [];
+            for (var i = 0; i < response.data.length; i++) {
+                reserved = reserved.concat(response.data[i].time);
+            }
+            this.setState({
+                busy: reserved,
+            });
+            console.log(response.data);
+        }).catch(errors => {
+            console.error(errors);
+        });
     }
 
     selectDate(e) {
@@ -87,26 +95,38 @@ export default class ReserveDayTime extends Component {
         else
             this.setState({ reserve: [...this.state.reserve, i] })
     }
+
     handleSubmit() {
+        /* Axios.post(`http://localhost:3001/reservations/${this.state.id}`, {
+             params: {
+                 date: this.state.bookingDate,
+                 selectedTimeSlot: this.state.reserve
+             }
+         }).then((res) => {
+             console.log("submitted");
+         });
+         window.location.reload();*/
         console.log("submitted");
     }
+
     render() {
         let pass = (({ busy, owned, reserve }) => ({ busy, owned, reserve }))(this.state);
         return (
             <>
                 <div className="container mt-5">
-                    <h3 className="page-header">Book time</h3>
+                    <h3 className="page-header">Make a reservation</h3>
                     <div className="row">
                         <table style={{ textAlign: "left", borderSpacing: "20px", borderCollapse: "separate" }}>
                             <tbody>
                                 <tr>
                                     <td className="">Date:
                                         <DatePicker
-                                            selected={this.state.date}
+                                            selected={this.state.bookingDate}
                                             onSelect={this.selectDate}
                                             dateFormat="dd-MM-yyyy"
                                             minDate={new Date()}
                                             disabledDays={[{ daysOfWeek: [0, 6] }]}
+                                            className="datepicker"
                                         />
                                     </td>
                                 </tr>

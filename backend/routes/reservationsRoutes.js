@@ -17,22 +17,27 @@ router.get("/", (req, res) => {
 
 //get a reservation by id
 router.get("/:id", (req, res) => {
-    const id = req.params.id.toString();
+    const id = req.params.id;
     const date = new Date(req.query.date);
+    console.log(id);
     date.setHours(0, 0, 0, 0);
-    Reservation.find({ 'resource': id, 'date': date })
-        .then((result) => {
-            res.send(result);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+    Resource.findById(id).then((found_resource) => {
+        Reservation.find({ 'resource': found_resource, 'date': date })
+            .then((result) => {
+                res.send(result);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }).catch((resErr) => {
+        console.log(resErr);
+    })
 });
 
 //new reservation,given resource id
 router.post("/:id", (req, res) => {
-    const id = req.params.id.toString();
-    const date = new Date(req.body.params.bookingDate);
+    const id = req.params._id;
+    const date = new Date(req.body.params.date);
     date.setHours(0, 0, 0, 0);
     Resource.findById(id).then((found_resource) => {
         for (let i = 0; i < req.body.params.selectedTimeSlot.length; i++) {
@@ -40,7 +45,6 @@ router.post("/:id", (req, res) => {
                 date: date,
                 time: req.body.params.selectedTimeSlot[i],
                 resource: found_resource,
-                resource_name: found_resource.name
             });
             reservation.save()
                 .then((reservation_resullt) => {

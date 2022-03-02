@@ -4,6 +4,9 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const app = express();
+const resourcesRoutes = require("./routes/resourcesRoutes");
+const usersRoutes = require("./routes/usersRoutes");
+const reservationsRoutes = require("./routes/reservationsRoutes");
 require("dotenv").config({ path: path.join(__dirname, '../.env') });
 
 const port = 3001;

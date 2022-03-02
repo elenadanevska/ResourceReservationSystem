@@ -11,7 +11,7 @@ function ResourceCard(props) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  let cardLink = <Link to={`/user/choose-time`} className="btn btn-primary actionButtonsCard">Reserve</Link>
+  let cardLink = <Link to={`/user/choose-time/${props.id}`} className="btn btn-primary actionButtonsCard">Reserve</Link>
 
 
   return (
@@ -33,14 +33,14 @@ function ResourceCard(props) {
         <Modal.Body>
           <div>
             <div className="text-center bg-secondary mb-3">
-              <img className="img-fluid" src={projector} alt="G1s" style={{ height: "220px", width: "250px" }} />
+              <img className="img-fluid" src={props.image ? props.image : projector} alt="G1s" style={{ height: "220px", width: "250px" }} />
             </div>
             <div className="container">
-              The best computer ever mede in history. You can play all of the videogames. New generation with microprocessor.
+              {props.description}
             </div>
             <div className="container">
               <hr />
-              <strong>Note:</strong> It is not avaliable from March/April.{props.note}
+              <strong>Note:</strong> {props.note}
             </div>
           </div>
         </Modal.Body>

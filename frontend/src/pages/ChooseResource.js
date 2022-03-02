@@ -1,50 +1,7 @@
 import React, { Component } from "react";
 import ResourceCard from "../components/ResourceCard";
 import Select from "react-select";
-
-
-let resources = [
-    {
-        "id": 1,
-        "name": "Smart Board",
-        "image": "",
-        "description": "description",
-        "note": "note",
-        "user": "user"
-    },
-    {
-        "id": 2,
-        "name": "Computer",
-        "image": "",
-        "description": "description1",
-        "note": "note1",
-        "user": "user1"
-    },
-    {
-        "id": 3,
-        "name": "AA",
-        "image": "",
-        "description": "description1",
-        "note": "note1",
-        "user": "user1"
-    },
-    {
-        "id": 4,
-        "name": "Naa",
-        "image": "",
-        "description": "description1",
-        "note": "note1",
-        "user": "user1"
-    },
-    {
-        "id": 5,
-        "name": "Ninten",
-        "image": "",
-        "description": "description1",
-        "note": "note1",
-        "user": "user1"
-    }
-]
+import Axios from "axios";
 
 const colClass = "col-md-3 mb-3";
 
@@ -56,6 +13,19 @@ class ChooseResource extends Component {
             value: '',
             label: '',
             options: {},
+            resources: [],
+            searchString: ""
+        }
+    }
+
+    componentDidMount() {
+        try {
+            Axios.get("http://localhost:3001/resources").then((response) => {
+                this.setState({ resources: response.data });
+                console.log(this.state.resources);
+            })
+        } catch (error) {
+            console.log(error)
         }
     }
 
@@ -67,13 +37,17 @@ class ChooseResource extends Component {
                 </h2>
                 <div className="mb-5" style={{ marginLeft: "2%" }}>
                     <div className="topnav__search mb-2" style={{ width: "40%" }}>
-                        <input type="text" placeholder='Search by name...' />
+                        <input type="text" placeholder='Search by name...' onChange={(e) => {
+                            this.setState({
+                                searchString: e.target.value.toLowerCase(),
+                            });
+                        }} />
                     </div>
                     <Select
                         className="selectType"
                         placeholder="Select Type"
                         options={this.state.options}
-                        defaultValue={{ value: '', label: 'Select resource type' }}
+                        defaultValue={{ value: '', label: 'Select resource group' }}
                         onChange={(e) => {
                             this.setState({
                                 value: e.value,
@@ -83,12 +57,14 @@ class ChooseResource extends Component {
                     />
                 </div>
                 <div className="row container">
-                    {resources.map((value) => {
-                        return (
-                            <div className={colClass} key={value.name}>
-                                <ResourceCard />
-                                <h2 className="text-center">{value.name}</h2>
-                            </div>);
+                    {this.state.resources.map((value) => {
+                        if (value.name.toLowerCase().includes(this.state.searchString)) {
+                            return (
+                                <div className={colClass} key={value.name}>
+                                    <ResourceCard note={value.note} description={value.describtion} image={value.image} id={value._id} />
+                                    <h2 className="text-center">{value.name}</h2>
+                                </div>);
+                        }
                     })}
                 </div>
             </div>

@@ -30,7 +30,7 @@ export default class App extends Component {
                                 <Route path='/user/resources' element={<MakeReservation />} />
                                 <Route path='/user/history' exact element={<History />} />
                                 <Route path='/user/help' element={<HelpUser />} />
-                                <Route path='/user/choose-time' element={<ReserveDateTime />} />
+                                <Route path='/user/choose-time/:id' element={<ReserveDateTime />} />
                             </Routes>
                         </div>
                     </div>

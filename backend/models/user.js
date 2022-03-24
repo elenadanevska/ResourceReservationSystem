@@ -7,8 +7,7 @@ const UserSchema = new Schema({
     surname: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    isAdmin: { type: Boolean, required: true, default: false },
-    gropus: [{ type: String, required: false }],
+    groups: [{ type: String, required: false }],
 }, { timestamps: true });
 
 UserSchema.methods.matchPassword = async function (enteredPassword) {

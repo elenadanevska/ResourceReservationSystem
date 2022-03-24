@@ -1,65 +1,69 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import user_image from '../assets/images/userpng1.png';
-import Dropdown from './UserDropdown';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignOut, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/js/bootstrap.min.js";
+import { useNavigate } from "react-router-dom";
+import Axios from "axios";
 
 
-const curr_user = {
-    display_name: 'Elena Danevska',
-    image: user_image
-}
-let user_menu = [
-    {
-        "icon": "bx bx-user",
-        "content": "Profile"
-    },
-    {
-        "icon": "bx bx-cog",
-        "content": "Settings"
-    },
-    {
-        "icon": "bx bx-log-out-circle bx-rotate-180",
-        "content": "Logout"
+export default function Topnav(props) {
+
+    const [name, setName] = useState("");
+    const [surname, setSurname] = useState("");
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (user && user.token) {
+            console.log(user);
+            setName(user.name);
+            setSurname(user.surname);
+        } else {
+            navigate("/");
+        }
+    }, []);
+
+    async function handleLogout() {
+        try {
+            await Axios.post(`http://localhost:3001/users/signout`).then((res) => {
+                console.log("signing out...")
+            });
+            localStorage.removeItem("user");
+            navigate("/");
+            window.location.reload()
+        } catch (error) {
+            console.log(error);
+        };
+
     }
-]
 
-const renderUserToggle = (user) => (
-    <div className="topnav__right-user">
-        <div className="topnav__right-user__image">
-            <img src={user.image} alt="" />
-        </div>
-        <div className="topnav__right-user__name">
-            {user.display_name}
-        </div>
-    </div>
-)
-
-const renderUserMenu = (item, index) => (
-    <Link to='/' key={index}>
-        <div className="notification-item">
-            <i className={item.icon}></i>
-            <span>{item.content}</span>
-        </div>
-    </Link>
-)
-
-const Topnav = () => {
     return (
         <div className='topnav'>
-            <div className="topnav__search">
-
-            </div>
+            <div className="topnav__search"></div>
             <div className="topnav__right">
                 <div className="topnav__right-item">
-                    <Dropdown
-                        customToggle={() => renderUserToggle(curr_user)}
-                        contentData={user_menu}
-                        renderItems={(item, index) => renderUserMenu(item, index)}
-                    />
+                    <li className="dropdown show list-unstyled">
+                        <Link to="" className="" id="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div className="topnav__right-user">
+                                <div className="topnav__right-user__image">
+                                    <img src={user_image} alt="" />
+                                </div>
+                                <div className="topnav__right-user__name">
+                                    {name + " " + surname}
+                                </div>
+                            </div>
+                        </Link>
+                        <ul className="dropdown-menu dropdown-menu-light text-small shadow" aria-labelledby="dropdown">
+                            <Link className="dropdown-item" to="" ><FontAwesomeIcon icon={faUserCircle} />    Profile</Link>
+                            <hr className="dropdown-divider" />
+                            <button className="dropdown-item" onClick={handleLogout}><FontAwesomeIcon icon={faSignOut} />    Sign out</button>
+                        </ul>
+                    </li>
                 </div>
             </div>
         </div>
     );
 }
-
-export default Topnav

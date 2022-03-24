@@ -9,7 +9,7 @@ const generateToken = (userId) => {
 }
 
 const createUser = asyncHandler((async (req, res) => {
-    const { name, surname, email, password, isAdmin, groups } = req.body; //requesting parameters from user/admin
+    const { name, surname, email, password, isAdmin, groups } = req.body;
     try {
         const userExists = await User.findOne({ email });
         if (userExists) {
@@ -24,9 +24,9 @@ const createUser = asyncHandler((async (req, res) => {
             res.status(201).json({
                 _id: newUser._id,
                 name: newUser.name,
+                surname: newUser.surname,
                 email: newUser.email,
-                isAdmin: newUser.isAdmin,
-                groups: newUser.goups,
+                groups: newUser.groups,
             });
         } else {
             res.status(400).json({ sucess: false, error: "Unknown error occured. User can not be created" });
@@ -42,18 +42,17 @@ const authUser = asyncHandler(async (req, res) => {
     try {
         const user = await User.findOne({ email });
         if (!user) {
-            res.status(401).json({ sucess: false, error: "User with this eail does not exist" });
+            res.status(401).json({ sucess: false, error: "User with this email does not exist" });
         } else {
             if (await user.matchPassword(password)) {
                 const token = generateToken(user._id);
                 res.cookie("auth_token", token, { httpOnly: true });
                 res.status(201).json({
-                    sucess: true,
                     _id: user._id,
                     name: user.name,
+                    surname: user.surname,
                     email: user.email,
-                    isAdmin: user.isAdmin,
-                    goups: user.goups,
+                    groups: user.groups,
                     token: token,
                 });
             } else {
@@ -65,9 +64,20 @@ const authUser = asyncHandler(async (req, res) => {
     }
 });
 
+//get all resources
+const getUsers = asyncHandler(async (req, res) => {
+    User.find()
+        .then((result) => {
+            res.status(201).json(result);
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+});
+
 const signOutUser = (req, res) => {
     res.clearCookie("auth_token");
     res.json({ sucess: true, message: "User signed out successfully" })
 }
 
-module.exports = { createUser, authUser, signOutUser };
+module.exports = { createUser, authUser, signOutUser, getUsers };

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Resource = require("../models/resource");
+const { checkValidationResult, resourceValidator } = require("../validators/resourceValidator");
 
 //get all resources
 router.get("/", (req, res) => {
@@ -22,6 +23,32 @@ router.get("/:id", (req, res) => {
         })
         .catch((err) => {
             console.log(err);
+        })
+});
+
+//insert new resource
+router.post("/", resourceValidator, checkValidationResult, (req, res) => {
+    const resourceName = req.body.name;
+    const resourceDescription = req.body.description;
+    const resourceNote = req.body.note;
+    const groups = req.body.gropus;
+    let image;
+    if (!req.body.file) {
+        image = "";
+    }
+    const resource = new Resource({
+        name: resourceName,
+        describtion: resourceDescription,
+        image_name: image,
+        note: resourceNote,
+        groups: groups
+    });
+    resource.save()
+        .then((result) => {
+            res.status(200).json({ message: "The resource have been saved successfully" });
+        })
+        .catch((err) => {
+            res.status(400).json({ error: err })
         })
 });
 

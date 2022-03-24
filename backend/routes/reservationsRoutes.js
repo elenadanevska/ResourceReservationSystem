@@ -15,11 +15,26 @@ router.get("/", (req, res) => {
         })
 });
 
+//get all users's reservations
+
+router.get("/user/:userId", (req, res) => {
+    const userId = req.params.userId;
+    User.findById(userId).then((current_user) => {
+        Reservation.find({ user: current_user }).sort({ date: -1, time: -1 })
+            .then((result) => {
+                res.send(result);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    });
+});
+
 //get a reservation by id
 router.get("/:id", (req, res) => {
     const id = req.params.id;
+    /*if date*/
     const date = new Date(req.query.date);
-    console.log(id);
     date.setHours(0, 0, 0, 0);
     Resource.findById(id).then((found_resource) => {
         Reservation.find({ 'resource': found_resource, 'date': date })
@@ -34,30 +49,34 @@ router.get("/:id", (req, res) => {
     })
 });
 
-//new reservation,given resource id
+//new reservation,given resource id and user
 router.post("/:id", (req, res) => {
-    const id = req.params._id;
+    const resourceId = req.params.id;
     const date = new Date(req.body.params.date);
+    const userId = req.body.params.userId;
     date.setHours(0, 0, 0, 0);
-    Resource.findById(id).then((found_resource) => {
-        for (let i = 0; i < req.body.params.selectedTimeSlot.length; i++) {
-            const reservation = new Reservation({
-                date: date,
-                time: req.body.params.selectedTimeSlot[i],
-                resource: found_resource,
+    User.findById(userId).then((current_user) => {
+        Resource.findById(resourceId).then((found_resource) => {
+            for (let i = 0; i < req.body.params.selectedTimeSlot.length; i++) {
+                const reservation = new Reservation({
+                    date: date,
+                    time: req.body.params.selectedTimeSlot[i],
+                    user: current_user,
+                    resource: found_resource,
+                });
+                reservation.save()
+                    .then((reservation_resullt) => {
+                        console.log("Success");
+                    })
+                    .catch((reservation_err) => {
+                        console.log(reservation_err);
+                    })
+            }
+        })
+            .catch((err) => {
+                console.log(err);
             });
-            reservation.save()
-                .then((reservation_resullt) => {
-                    console.log("Success");
-                })
-                .catch((reservation_err) => {
-                    console.log(reservation_err);
-                })
-        }
-    })
-        .catch((err) => {
-            console.log(err);
-        });
+    });
 });
 
 //delete reservation with specific id

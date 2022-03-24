@@ -27,7 +27,4 @@ exports.userValidator = [
         .trim()
         .not().isEmpty().withMessage("Password can not be empty")
         .isLength({ min: 7 }).withMessage("Password must be at least 7 characters long"),
-    check("isAdmin")
-        .trim()
-        .not().isEmpty().withMessage("IsAdmin field can not be empty (true/false)"),
 ];

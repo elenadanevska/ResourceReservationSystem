@@ -8,7 +8,7 @@ import { faList, faHistory, faQuestionCircle, faPenToSquare } from '@fortawesome
 let sidebar_items = [
     {
         "display_name": "Reservations",
-        "route": "/",
+        "route": "/user/reservations",
         "icon": faList
     },
     {

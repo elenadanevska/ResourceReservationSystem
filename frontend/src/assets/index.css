@@ -256,6 +256,76 @@ input {
     border: 1px solid #878787;
 }
 
+/*LOGIN*/
+
+.formContent {
+    -webkit-border-radius: 10px 10px 10px 10px;
+    border-radius: 10px 10px 10px 10px;
+    background: #fff;
+    padding: 30px;
+    width: 90%;
+    max-width: 450px;
+    position: relative;
+    padding: 0px;
+    -webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+    box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+    text-align: center;
+  }
+
+.Login form{
+    margin: 0 auto;
+    max-width: 320px;
+  }
+.Login {
+    padding: 50px 0;
+  }
+.logWindow{
+    margin-top: 7%;
+  }
+
+.logInWrapper {
+    display: flex;
+    align-items: center;
+    flex-direction: column; 
+    justify-content: center;
+    width: 100%;
+    min-height: 100%;
+    padding: 20px;
+  }
+
+  #userIcon {
+    width:20%;
+  }
+
+  .fadeIn.first {
+    -webkit-animation-delay: 0.4s;
+    -moz-animation-delay: 0.4s;
+    animation-delay: 0.4s;
+  }
+
+  #formFooter {
+    background-color: #f6f6f6;
+    border-top: 1px solid #dce8f1;
+    padding: 10px;
+    text-align: center;
+    -webkit-border-radius: 0 0 10px 10px;
+    border-radius: 0 0 10px 10px;
+  }
+
+  .bgImage{
+    background-image: url("./images/friBackgroundBlur.jpg");
+    width: 100%;
+    background-repeat: repeat;
+    position: absolute;
+    overflow-x: hidden;
+    filter: blur(0px);
+          -webkit-filter: blur(0px);
+          -moz-filter: blur(0px);
+          -o-filter: blur(0px);
+          -ms-filter: blur(0px);
+    background-position: center;
+    background-size: cover;
+  }
 
 
 

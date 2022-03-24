@@ -7,12 +7,22 @@ import Axios from "axios";
 const Reservations = () => {
 
     const [reservations, setReservations] = useState([]);
-    const [skipped, setSkipped] = useState(0);
+    const [resources, setResources] = useState({});
+    const user = JSON.parse(localStorage.getItem("user"));
+    let skipped = 0;
 
     useEffect(() => {
-        Axios.get("http://localhost:3001/reservations").then((response) => {
-            setReservations(response.data);
-        })
+        Axios.get(`http://localhost:3001/reservations/user/${user._id}`).then((response) => {
+            let data = response.data;
+            setReservations(data);
+            data.forEach(res => {
+                Axios.get(`http://localhost:3001/resources/${res.resource}`).then((r) => {
+                    let newResource = {};
+                    newResource[r.data._id] = r.data.name;
+                    setResources(resources => ({ ...resources, ...newResource }))
+                });
+            })
+        });
     }, []);
 
     function TableHeader() {
@@ -38,28 +48,27 @@ const Reservations = () => {
             <h2 className="page-header">
                 Reservations
             </h2>
-            {console.log(reservations)}
             <div className="container">
                 <Table striped bordered hover className="bg-light">
                     {TableHeader()}
                     {reservations.map((value, index) => {
-                        //if (new Date(value.date) >= new Date()) {
-                        const reservationDate = cutDate(value.date);
-                        return <tbody key={value._id}>
-                            <tr>
-                                <td>{index + 1 - skipped}</td>
-                                <td>{value.resource_name}</td>
-                                <td>{reservationDate}</td>
-                                <td>{value.time}</td>
-                                <td>
-                                    <ShowButton name={value.resource_name} date={reservationDate} time={value.time} place="R1-FRI" />
-                                    <DeleteButton type="reservation" />
-                                </td>
-                            </tr>
-                        </tbody>
-                        // } else {
-                        //    skipped++;
-                        //}
+                        if (new Date(value.date) >= new Date()) {
+                            const reservationDate = cutDate(value.date);
+                            return <tbody key={value._id}>
+                                <tr>
+                                    <td>{index + 1 - skipped}</td>
+                                    <td>{resources[value.resource]}</td>
+                                    <td>{reservationDate}</td>
+                                    <td>{value.time}</td>
+                                    <td>
+                                        <ShowButton name={resources[value.resource]} date={reservationDate} time={value.time} place="R1-FRI" />
+                                        <DeleteButton id={value._id} />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        } else {
+                            skipped++;
+                        }
                     })}
                 </Table>
             </div>

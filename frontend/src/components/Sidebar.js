@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/images/unilj.png';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faList, faHistory, faQuestionCircle, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 
@@ -28,43 +29,47 @@ let sidebar_items = [
     },
 ]
 
-
-const SidebarItem = props => {
-
-    const active = props.active ? 'active' : ''
-
-    return (
-        <div className="sidebar__item">
-            <div className={`sidebar__item-inner ${active}`}>
-                <FontAwesomeIcon icon={props.icon} />
-                <span className='sidebar__itemTitle'>
-                    {props.title}
-                </span>
-            </div>
-        </div>
-    )
-}
-
 const Sidebar = props => {
 
-    /*const activeItem = sidebar_items.findIndex(item => item.route === props.location.pathname)*/
+    function sidebarElement() {
+        if (props.type == "navbar") {
+            return <div className="row smallScreenMenu">
+                {
+                    sidebar_items.map((item, index) => (
+                        <Link to={item.route} key={index} className="col">
+                            <div className='navbarItem'>
+                                <FontAwesomeIcon icon={item.icon} />
+                                {item.display_name}
+                            </div>
+                        </Link>
+                    ))
+                }
+            </div>
+        } else {
+            return <div className="sidebar">
+                <div className="sidebarLogo">
+                    <img src={logo} alt="uni logo" />
+                </div>
+                {
+                    sidebar_items.map((item, index) => (
+                        <Link to={item.route} key={index}>
+                            <div className="sidebarItem">
+                                <div className={`sidebarItemInner ${props.active}`}>
+                                    <FontAwesomeIcon icon={item.icon} />
+                                    <span className='sidebarItemInnerTitle'>
+                                        {item.display_name}
+                                    </span>
+                                </div>
+                            </div>
+                        </Link>
+                    ))
+                }
+            </div>
+        }
+    }
 
     return (
-        <div className='sidebar'>
-            <div className="sidebar__logo">
-                <img src={logo} alt="uni logo" />
-            </div>
-            {
-                sidebar_items.map((item, index) => (
-                    <Link to={item.route} key={index}>
-                        <SidebarItem
-                            title={item.display_name}
-                            icon={item.icon}
-                        />
-                    </Link>
-                ))
-            }
-        </div>
+        sidebarElement()
     )
 }
 

@@ -8,6 +8,9 @@ const Reservations = () => {
 
     const [reservations, setReservations] = useState([]);
     const [resources, setResources] = useState({});
+    const [searchString, SetSearchString] = useState("");
+    const [sortDateUp, setSortDateUp] = useState(true);
+    const [sortResourceUp, setSortResourceUp] = useState(true);
     const user = JSON.parse(localStorage.getItem("user"));
     let skipped = 0;
 
@@ -25,22 +28,88 @@ const Reservations = () => {
         });
     }, []);
 
+    function cutDate(date) {
+        return date.slice(0, 10).split('-').reverse().join('/');
+    }
+
     function TableHeader() {
         return (
             <thead className="bg-info">
                 <tr>
                     <th scope="col"></th>
-                    <th scope="col">Resource Name</th>
-                    <th scope="col">Date</th>
+                    <th scope="col">Resource Name
+                        <span className='arrows'>
+                            <button className="up-arrow" onClick={() => sortResource()}></button>
+                            <button className="down-arrow" onClick={() => sortResource()}></button>
+                        </span>
+                    </th>
+                    <th scope="col">Date
+                        <span className='arrows'>
+                            <button className="up-arrow" onClick={() => sortDate()}></button>
+                            <button className="down-arrow" onClick={() => sortDate()}></button>
+                        </span>
+                    </th>
                     <th scope="col">Time</th>
                     <th scope="col">Actions</th>
                 </tr>
-            </thead>
+            </thead >
         );
     }
 
-    function cutDate(date) {
-        return date.slice(0, 10).split('-').reverse().join('/');
+    const RederTable = () => {
+        let notFound = true;
+        let tableBody = reservations.map((value, index) => {
+            if (new Date(value.date) >= new Date()) {
+                const reservationDate = cutDate(value.date);
+                const resourceName = resources[value.resource];
+                const reservationTime = value.time;
+                if ((resourceName != undefined && resourceName.toLowerCase().includes(searchString)) ||
+                    reservationDate.includes(searchString) || reservationTime.includes(searchString)) {
+                    notFound = false;
+                    return <tbody key={value._id}>
+                        <tr>
+                            <td>{index + 1 - skipped}</td>
+                            <td>{resourceName}</td>
+                            <td>{reservationDate}</td>
+                            <td>{reservationTime}</td>
+                            <td>
+                                <ShowButton name={resourceName} date={reservationDate} time={value.time} place="R1-FRI" />
+                                <DeleteButton id={value._id} name={resourceName} date={reservationDate} time={value.time} setRes={setReservations} />
+                            </td>
+                        </tr>
+                    </tbody>
+                }
+            } else {
+                skipped++;
+            }
+        });
+        if (notFound) {
+            return <div>No results found</div>
+        } else {
+            return <Table striped bordered hover className="bg-light">
+                {TableHeader()}
+                {tableBody}
+            </Table>
+        }
+    }
+
+    function cmp(a, b, up) {
+        if (a > b) return up ? 1 : -1;
+        if (a < b) return up ? -1 : 1;
+        return 0;
+    }
+
+    function sortDate() {
+        let r = reservations.sort((a, b) => cmp(a.date, b.date, sortDateUp) || cmp(a.time, b.time, sortDateUp));
+        setReservations(r);
+        setSortDateUp(!sortDateUp);
+    }
+
+    function sortResource() {
+        let r;
+        r = reservations.sort((a, b) => cmp(resources[a.resource], resources[b.resource], sortResourceUp));
+        setReservations(r);
+        setSortResourceUp(!sortResourceUp);
     }
 
     return (
@@ -49,28 +118,12 @@ const Reservations = () => {
                 Reservations
             </h2>
             <div className="container">
-                <Table striped bordered hover className="bg-light">
-                    {TableHeader()}
-                    {reservations.map((value, index) => {
-                        if (new Date(value.date) >= new Date()) {
-                            const reservationDate = cutDate(value.date);
-                            return <tbody key={value._id}>
-                                <tr>
-                                    <td>{index + 1 - skipped}</td>
-                                    <td>{resources[value.resource]}</td>
-                                    <td>{reservationDate}</td>
-                                    <td>{value.time}</td>
-                                    <td>
-                                        <ShowButton name={resources[value.resource]} date={reservationDate} time={value.time} place="R1-FRI" />
-                                        <DeleteButton id={value._id} />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        } else {
-                            skipped++;
-                        }
-                    })}
-                </Table>
+                <div className="customSearch mb-4" style={{ width: "40%" }}>
+                    <input type="text" placeholder='Search reservations...' onChange={(e) => {
+                        SetSearchString(e.target.value.toLowerCase());
+                    }} />
+                </div>
+                <RederTable />
             </div>
         </div>
     );

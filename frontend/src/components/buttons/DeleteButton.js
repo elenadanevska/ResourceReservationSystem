@@ -16,12 +16,10 @@ function DeleteButton(props) {
     const deleteReservation = (id) => {
         Axios.delete(`http://localhost:3001/reservations/${id}`).then((response) => {
             if (response.status === 200) {
-                /* Axios.get("http://localhost:3001/reservations")
-                     .then((response) => {
-                         let data = response.data
-                         props.reservations = data;
-                     });
-                 */
+                Axios.get("http://localhost:3001/reservations")
+                    .then((response) => {
+                        props.setRes(response.data);
+                    });
                 console.log("reseration deleted")
             }
         });
@@ -47,7 +45,12 @@ function DeleteButton(props) {
                 className="overlay-opacity"
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>Are you sure you want to delete this reservation?</Modal.Title>
+                    <Modal.Title>
+                        Are you sure you want to cancel this reservation?<br />
+                        <h5 className="mt-2 text-secondary">
+                            {props.name} <br /> {props.date} {props.time}
+                        </h5>
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Footer>
                     <Button variant="success" onClick={handleDelete}>

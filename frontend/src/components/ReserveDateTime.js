@@ -10,7 +10,8 @@ const ReserveDayTime = props => {
     const [busy, setBusy] = useState([]);
     const [owned, setOwned] = useState([]);
     const [reserve, setReserve] = useState([]);
-    let current_user = JSON.parse(localStorage.getItem("user"));
+    const [selected, setSelected] = useState([]);
+    const current_user = JSON.parse(localStorage.getItem("user"));
     const { id } = useParams();
     let times = [
         "08:00 - 08:30", "08:30 - 09:00", "09:00 - 09:30", "09:30 - 10:00", "10:00 - 10:30",
@@ -18,51 +19,34 @@ const ReserveDayTime = props => {
         "13:30 - 14:00", "14:30 - 15:00", "15:00 - 15:30", "15:30 - 16:00", "16:00 - 16:30", "16:30 - 17:00",
     ];
 
-    /*
-        constructor(props) {
-            super(props);
-            this.state = {
-                bookingDate: new Date(),
-                resourceName: "",
-                busy: [],
-                owned: [],
-                reserve: [],
-                //id: this.props.match.params.id
-                id: this.props.match.params.id,
-                user: null
-            }
-            this.selectDate = this.selectDate.bind(this);
-            this.handleTimeSelect = this.handleTimeSelect.bind(this)
-        }
-        */
-
     useEffect(() => {
         Axios.get(`http://localhost:3001/reservations/${id}`, {
             params: {
                 date: bookingDate,
             }
         }).then((response) => {
-            let reserved = [];
-            for (var i = 0; i < response.data.length; i++) {
-                reserved = reserved.concat(response.data[i].time);
-            }
-            setBusy(reserved);
+            setOwnedReserved(response.data)
         }).catch(errors => {
             console.error(errors);
         });
 
     }, [bookingDate]);
 
-    const TableButton = (props) => {
-        return <div>
-            {props.content}
-            <div className="row"><div className="col"></div></div>
-            <div className="row"><div className={process.txtClasses}>{props.buttonText}</div></div>
-        </div>
+    function setOwnedReserved(data) {
+        let reserved = [];
+        let mine = []
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].user == current_user._id) {
+                mine = mine.concat(data[i].time);
+            } else {
+                reserved = reserved.concat(data[i].time);
+            }
+        }
+        setBusy(reserved);
+        setOwned(mine);
     }
 
     const onDateChange = e => {
-        console.log(new Date(e));
         setBookingDate(e);
         setReserve([]);
         Axios.get(`http://localhost:3001/reservations/${id}`, {
@@ -70,12 +54,7 @@ const ReserveDayTime = props => {
                 date: e,
             }
         }).then((response) => {
-            console.log(response.data);
-            let reserved = [];
-            for (var i = 0; i < response.data.length; i++) {
-                reserved = reserved.concat(response.data[i].time);
-            }
-            setBusy(reserved);
+            setOwnedReserved(response.data)
         });
     };
 
@@ -84,12 +63,11 @@ const ReserveDayTime = props => {
             let tempArray = reserve;
             tempArray.splice(reserve.indexOf(i), 1)
             setReserve(tempArray);
+            setSelected([...tempArray, i]);
         }
         else {
-            console.log("setting...");
             setReserve([...reserve, i]);
         }
-        console.log(reserve);
     }
 
     const handleSubmit = e => {
@@ -104,31 +82,49 @@ const ReserveDayTime = props => {
             }).then((res) => {
                 console.log("submitted");
             });
-            window.location.reload();
-            console.log("submitted");
         }
+        setOwned(owned.concat(reserve));
+        setReserve([]);
+    }
+
+    function changeDateTommorow(up) {
+        var tommorow = bookingDate;
+        if (up) tommorow.setDate(bookingDate.getDate() + 1);
+        else tommorow.setDate(bookingDate.getDate() - 1);
+        setBookingDate(new Date(tommorow));
+        setReserve([]);
+    }
+
+    const CalenderTimeSlot = (props) => {
+        return <div>
+            {props.i}
+            <div className="row"><div className="col"></div></div>
+            <div className="row"><div className={`col ${props.style}`}>{props.buttonText}</div></div>
+        </div>
     }
 
     return (
         <div className="container mt-5">
             <h3 className="page-header">Make a reservation</h3>
             <div className="row">
-                <table style={{ textAlign: "left", borderSpacing: "20px", borderCollapse: "separate" }}>
-                    <tbody>
-                        <tr>
-                            <td className="">Date:
-                                <DatePicker
-                                    selected={bookingDate}
-                                    onSelect={onDateChange}
-                                    dateFormat="dd-MM-yyyy"
-                                    minDate={new Date()}
-                                    disabledDays={[{ daysOfWeek: [0, 6] }]}
-                                    className="datepicker"
-                                />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div className='mt-3 col'>
+                    <span className='calendarArrow' onClick={e => changeDateTommorow(false)}>{"<- "}Yesterday</span>
+                </div>
+                <div className='mb-3 text-center col'>
+                    PICK A DATE
+                    <DatePicker
+                        selected={bookingDate}
+                        onSelect={onDateChange}
+                        dateFormat="dd-MM-yyyy"
+                        minDate={new Date()}
+                        disabledDays={[{ daysOfWeek: [0, 6] }]}
+                        className="datepicker text-center"
+                        popperPlacement="bottom"
+                    />
+                </div>
+                <div className='mt-3 col text-end'>
+                    <span className='calendarArrow' onClick={e => changeDateTommorow(true)}>Tommorow{" ->"}</span>
+                </div>
             </div>
             <div className='row'>
                 {times.map((i, index) => {
@@ -137,47 +133,28 @@ const ReserveDayTime = props => {
                     }
                     if (busy.includes(i)) {
                         return <button className={`col btn-danger`} key={i} disabled>
-                            <div>
-                                {i}
-                                <div className="row"><div className="col"></div></div>
-                                <div className="row"><div className="col txt-secondary">Busy</div></div>
-                            </div>
+                            <CalenderTimeSlot buttonText="Busy" style="txt-secondary" i={i} />
                         </button>
                     } else if (owned.includes(i)) {
-                        return <button className={`col btn/primary`} key={i} disabled>
-                            <div>
-                                {i}
-                                <div className="row"><div className="col"></div></div>
-                                <div className="row"><div className="col txt-secondary">Owned</div></div>
-                            </div>
+                        return <button className={`col btn-primary`} key={i} disabled>
+                            <CalenderTimeSlot buttonText="Owned" style="txt-secondary" i={i} />
                         </button>
                     } else if (reserve.includes(i)) {
-                        console.log("in reserve");
-                        var rArray = reserve;
-                        console.log(rArray);
                         return <button className={`col btn-info`} key={i}
                             onClick={() => handleTimeSelect(i)}>
-                            <div>
-                                {i}
-                                <div className="row"><div className="col"></div></div>
-                                <div className="row"><div className="col">Selected</div></div>
-                            </div>
+                            <CalenderTimeSlot buttonText="Selected" style="" i={i} />
                         </button>
                     } else {
                         return <button className={`col btn-secondary`} key={i}
                             onClick={() => handleTimeSelect(i)}>
-                            <div>
-                                {i}
-                                <div className="row"><div className="col"></div></div>
-                                <div className="row"><div className="col text-secondary">Free</div></div>
-                            </div>
+                            <CalenderTimeSlot buttonText="Free" style="txt-secondary" i={i} />
                         </button>
                     }
                 })}
             </div>
             <div className='mt-5 row text-center'>
                 <div className="col">
-                    <button className="btn bg-primary" onClick={() => handleSubmit()} disabled={reserve.length === 0 ? true : false}>Reserve</button>
+                    <button className="btn bg-primary text-white" onClick={() => handleSubmit()} disabled={reserve.length === 0 ? true : false}>Reserve</button>
                 </div>
             </div>
         </div>

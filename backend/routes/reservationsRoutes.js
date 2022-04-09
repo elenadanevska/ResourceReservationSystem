@@ -81,9 +81,10 @@ router.post("/:id", (req, res) => {
 
 //delete reservation with specific id
 router.delete("/:id", (req, res) => {
-    const id = req.params.id.toString();
+    const id = req.params.id;
     Reservation.findByIdAndDelete(id)
         .then((result) => {
+            res.send(result);
             console.log("Reservation with id " + id + " has been successfully deleted");
         })
         .catch((err) => {

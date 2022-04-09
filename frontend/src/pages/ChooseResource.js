@@ -47,7 +47,7 @@ class ChooseResource extends Component {
                     Resources
                 </h2>
                 <div className="mb-5" style={{ marginLeft: "2%" }}>
-                    <div className="topnav__search mb-2" style={{ width: "40%" }}>
+                    <div className="customSearch mb-2" style={{ width: "40%" }}>
                         <input type="text" placeholder='Search by name...' onChange={(e) => {
                             this.setState({
                                 searchString: e.target.value.toLowerCase(),

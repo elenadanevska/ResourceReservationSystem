@@ -6,6 +6,7 @@ import Reservations from './pages/Reservations';
 import MakeReservation from './pages/ChooseResource';
 import History from './pages/History';
 import HelpUser from './pages/HelpUser';
+import UserProfile from './pages/UserProfile';
 import ReserveDateTime from './components/ReserveDateTime';
 import Login from "./pages/Login";
 import "./assets/grid.css";
@@ -39,16 +40,18 @@ export default class App extends Component {
             return (
                 <BrowserRouter>
                     <div className="layout">
-                        <Sidebar />
-                        <div className="layout__content">
+                        <Sidebar classes="sidebar" />
+                        <div className="content">
                             <TopNav />
-                            <div className="layout__content-main">
+                            <div className="content-main">
                                 <Routes>
                                     <Route path='/user/reservations' exact element={<Reservations />} />
                                     <Route path='/user/resources' element={<MakeReservation />} />
                                     <Route path='/user/history' exact element={<History />} />
                                     <Route path='/user/help' element={<HelpUser />} />
+                                    <Route path='/user/profile' exact element={<UserProfile />} />
                                     <Route path='/user/choose-time/:id' element={<ReserveDateTime />} />
+                                    <Route path="/login" element={<Navigate replace to="/user/reservations" />} />
                                 </Routes>
                             </div>
                         </div>

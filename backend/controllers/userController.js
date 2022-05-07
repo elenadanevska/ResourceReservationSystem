@@ -8,15 +8,35 @@ const generateToken = (userId) => {
     });
 }
 
+const validateToken = asyncHandler(async (req, res) => {
+    try {
+        const token = req.header("x-auth-token");
+        if (!token) {
+            return res.json(false);
+        }
+        const verified = jwt.verify(token, process.env.JWT_SECRET);
+        if (!verified) {
+            return res.json(false);
+        }
+        const user = await User.findById(verified._id);
+        if (!user) {
+            return res.json(false)
+        };
+        return res.json(true);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 const createUser = asyncHandler((async (req, res) => {
-    const { name, surname, email, password, isAdmin, groups } = req.body;
+    const { name, surname, email, password, isAdmin, groups, slovenian } = req.body;
     try {
         const userExists = await User.findOne({ email });
         if (userExists) {
             res.status(400).json({ sucess: false, error: "User with this email address already exists" });
         }
         const newUser = await User.create({
-            name, surname, email, password, isAdmin, groups
+            name, surname, email, password, isAdmin, groups, slovenian
         });
         if (newUser) {
             const token = generateToken(newUser._id);
@@ -25,8 +45,10 @@ const createUser = asyncHandler((async (req, res) => {
                 _id: newUser._id,
                 name: newUser.name,
                 surname: newUser.surname,
+                token: token,
                 email: newUser.email,
                 groups: newUser.groups,
+                slovenian: newUser.slovenian,
             });
         } else {
             res.status(400).json({ sucess: false, error: "Unknown error occured. User can not be created" });
@@ -34,6 +56,16 @@ const createUser = asyncHandler((async (req, res) => {
         res.status(201).json({ sucess: true, name, email });
     } catch (errpr) {
         res.status(500).json({ sucess: false, error: "Error occured. The user can not be created" });
+    }
+}));
+
+const updateUser = asyncHandler((async (req, res) => {
+    try {
+        await User.findByIdAndUpdate(req.params.id, { $set: req.body })
+        res.status(201).json({ sucess: true, message: "The user has been updated sucessfully" })
+    } catch (error) {
+        res.status(500).json({ sucess: false, error: "Error occured. The user can not be updated" });
+        console.log(error);
     }
 }));
 
@@ -46,6 +78,7 @@ const authUser = asyncHandler(async (req, res) => {
         } else {
             if (await user.matchPassword(password)) {
                 const token = generateToken(user._id);
+                //token = user.token;
                 res.cookie("auth_token", token, { httpOnly: true });
                 res.status(201).json({
                     _id: user._id,
@@ -53,6 +86,7 @@ const authUser = asyncHandler(async (req, res) => {
                     surname: user.surname,
                     email: user.email,
                     groups: user.groups,
+                    slovenian: user.slovenian,
                     token: token,
                 });
             } else {
@@ -80,4 +114,4 @@ const signOutUser = (req, res) => {
     res.json({ sucess: true, message: "User signed out successfully" })
 }
 
-module.exports = { createUser, authUser, signOutUser, getUsers };
+module.exports = { createUser, authUser, updateUser, signOutUser, getUsers, validateToken };

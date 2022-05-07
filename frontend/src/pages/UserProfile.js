@@ -1,24 +1,60 @@
 import React, { useState } from "react";
 import user_image from '../assets/images/userpng1.png';
 import Select from "react-select";
+import slo from "../translations/slo.json";
+import en from "../translations/en.json";
+import Axios from "axios";
 
 const UserProfile = () => {
     const current_user = JSON.parse(localStorage.getItem("user"));
+    const [languageChanged, setLanguageChanged] = useState(false);
+    const [slovenian, setSlovenian] = useState(current_user.slovenian);
+    var translationFile = slovenian ? slo : en
     const languageOptions = [
         { value: 'english', label: 'English' },
         { value: 'slovenian', label: 'Slovenian' },
     ]
 
+    function changeLanguage(e) {
+        let changeUser = false;
+        if (e.value == "slovenian") {
+            if (!slovenian) {
+                changeUser = true;
+                setSlovenian(true);
+                current_user.slovenian = true;
+            }
+        } else {
+            if (slovenian) {
+                changeUser = true;
+                setSlovenian(false);
+                current_user.slovenian = false;
+            }
+        }
+        if (changeUser) {
+            setLanguageChanged(!languageChanged);
+            window.location.reload();
+            try {
+                localStorage.setItem("user", JSON.stringify(current_user));
+                console.log(current_user);
+                Axios.put(`http://localhost:3001/users/update/${current_user._id}`, { slovenian: current_user.slovenian }).then((response) => {
+                    console.log(response);
+                }).catch((e) => console.log(e));
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
+
     return (
         <div>
             <h2 className="page-header">
-                Profile
+                {translationFile.titles.profile}
             </h2>
             <div className="container rounded bg-white mt-5 mb-5">
                 <div className="row">
                     <div className="col-md-3 profileLeft">
                         <div className="d-flex flex-column align-items-center text-center p-3 py-5">
-                            <img className="rounded-circle mt-5" width="150px" src={user_image} />
+                            <img className="rounded-circle mt-5" alt="user" width="150px" src={user_image} />
                             <span className="font-waight-bold mt-3">{current_user.name} {current_user.surname}</span>
                         </div>
                     </div>
@@ -26,30 +62,32 @@ const UserProfile = () => {
                         <div className="profileText">
                             <div className="p-3 py-5">
                                 <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h4 className="text-right">Personal Information</h4>
+                                    <h4 className="text-right">{translationFile.profile_page.infoTitle}</h4>
                                 </div>
                                 <div className="row mt-2 nameSurname">
-                                    <div className="col-md-7"><label className="labels proLabels">Name and Surname:&emsp;</label><br />{current_user.name} {current_user.surname}</div>
+                                    <div className="col"><label className="labels proLabels">{translationFile.profile_page.nameSurname}:&emsp;</label><br />{current_user.name} {current_user.surname}</div>
                                 </div>
                                 <div className="row mt-2">
-                                    <div className="col-md-7"><label className="labels proLabels">Role:&emsp;</label><br />Student</div>
+                                    <div className="col"><label className="labels proLabels">{translationFile.profile_page.role}:&emsp;</label><br />
+                                        {translationFile.profile_page.student}
+                                    </div>
                                 </div>
                                 <div className="row mt-2">
-                                    <div className="col-md-6"><label className="labels proLabels">Email:&emsp;</label>{current_user.email}</div>
+                                    <div className="col"><label className="labels proLabels">{translationFile.profile_page.email}:&emsp;</label>{current_user.email}</div>
                                 </div>
                                 <div className="row mt-2">
-                                    <div className="col-md-6"><label className="labels proLabels">Language:&emsp;</label>
+                                    <div className="col"><label className="labels proLabels">{translationFile.profile_page.language}:&emsp;</label>
                                         <Select
                                             options={languageOptions}
-                                            defaultValue={{ value: 'english', label: 'English' }}
+                                            defaultValue={slovenian ? { value: 'slovenian', label: 'Slovenian' } : { value: 'english', label: 'English' }}
                                             onChange={(e) => {
-                                                console.log(e);
+                                                changeLanguage(e);
                                             }}
                                         />
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between align-items-center mb-3 mt-4">
-                                    <h4 className="text-right">Groups</h4>
+                                    <h4 className="text-right">{translationFile.profile_page.groups}</h4>
                                 </div>
                                 <div className="row mt-2">
                                     <div className="col-6">

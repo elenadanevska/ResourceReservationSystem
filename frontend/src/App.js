@@ -9,6 +9,7 @@ import HelpUser from './pages/HelpUser';
 import UserProfile from './pages/UserProfile';
 import ReserveDateTime from './components/ReserveDateTime';
 import Login from "./pages/Login";
+import Axios from "axios";
 import "./assets/grid.css";
 import "./assets/index.css";
 
@@ -18,14 +19,24 @@ export default class App extends Component {
         this.state = {
             apiResponse: "",
             isLogin: false,
-            user: null,
+            token: "",
+            validToken: false
         };
+        this.login = this.login.bind(this)
+    }
+
+
+    login({ token, isLogin }) {
+        this.setState({ token, isLogin })
     }
 
     checkLoggedIn() {
         const user = JSON.parse(localStorage.getItem("user"));
-        if (user && user.token) {
-            this.setState({ isLogin: true, user: user })
+        if (user) {
+            this.setState({ isLogin: true, user: user, token: user.token });
+            Axios.post('http://localhost:3001/users/tokenIsValid', null, { headers: { "x-auth-token": user.token } }).then((response) => {
+                this.setState({ validToken: response.data });
+            });
         } else {
             this.setState({ isLogin: false, user: null })
         }
@@ -36,7 +47,7 @@ export default class App extends Component {
     }
 
     render() {
-        if (this.state.isLogin === true) {
+        if (this.state.isLogin === true && this.state.validToken) {
             return (
                 <BrowserRouter>
                     <div className="layout">

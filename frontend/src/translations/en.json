@@ -1,0 +1,65 @@
+{
+    "menu": {
+        "reservations": "Reservations",
+        "resources": "Choose Resource",
+        "history": "History",
+        "help": "User Support"
+    },
+    "titles": {
+        "reservations": "Reservations",
+        "resources": "Resources",
+        "history": "Previous Reservations",
+        "help": "User Support",
+        "reserve": "Make A Reservation",
+        "profile": "Profile"
+    },
+    "reservations_page": {
+        "resource_name": "Resource Name",
+        "date": "Date",
+        "time": "Time",
+        "actions": "Actions",
+        "search": "Search reservations...",
+        "not_found": "No results found"
+    },
+    "resources_page": {
+        "search": "Search by name",
+        "button": {
+            "reserve": "Reserve",
+            "close": "Close",
+            "free": "Free",
+            "selected": "Selected",
+            "owned": "Owned",
+            "busy": "Busy"
+        },
+        "pick_date": "Pick a date",
+        "tommorow": "Tommorow",
+        "yesterday": "Yesterday"
+    },
+    "history_page": {
+        "from_date": "From Date",
+        "to_date": "To Date",
+        "show_button": "Show"
+    },
+    "help_page": {
+        "friSite": "You can find more about this site on the website of the Faculty of Computer and Information Sciences, University of Ljubljana",
+        "questions": "If you have any problems or questions you can also contact us using the contact form bellow",
+        "nameLabel": "Your name",
+        "topicLabel": "Subject",
+        "messageLabel": "Your message",
+        "contactFormTitle": "Contact Us",
+        "sendMessage": "Send a message"
+    },
+    "profile_page": {
+        "infoTitle": "Personal Information",
+        "nameSurname": "Name and Surname",
+        "language": "Language",
+        "groups": "Groups",
+        "email": "Email Address",
+        "role": "Role",
+        "student": "Student"
+    },
+    "dropdown": {
+        "profile": "Profile",
+        "signout": "Sign out"
+    }
+}

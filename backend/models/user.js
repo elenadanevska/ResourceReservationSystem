@@ -8,6 +8,7 @@ const UserSchema = new Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     groups: [{ type: String, required: false }],
+    slovenian: { type: Boolean, default: false },
 }, { timestamps: true });
 
 UserSchema.methods.matchPassword = async function (enteredPassword) {

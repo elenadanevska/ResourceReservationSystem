@@ -1,61 +1,36 @@
-import React, { useState } from 'react';
-import Faq from "react-faq-component";
+import React from 'react';
+import slo from "../translations/slo.json";
+import en from "../translations/en.json";
+import { Link } from 'react-router-dom';
 
-const data = {
-    title: "FAQ",
-    rows: [
-        {
-            title: "How does the resource reservation system work?",
-            content: ` online booking system uses smart technology that eliminates the risks associated with manual input and human error. It simplifies the booking process
-            for you and your customers by automatically updating processes such as payment scheduling, inventory management and tracking bookings.`,
-        },
-        {
-            title: "I reserved a resource but I don't need it anymore. Till when can I cancel?",
-            content:
-                "Zpu can cancel in any time",
-        },
-        {
-            title: "I can not find the resource I need. Who should I cotactt?",
-            content: `You can write on the following email: aa@fri.uni-lj.si `,
-        },
-    ],
-};
-
-const styles = {
-    titleTextColor: "black",
-    rowTitleColor: "gray",
-};
-
-const config = {
-    animate: true,
-};
-
-const ContactForm = () => {
+const ContactForm = (props) => {
     return (
-        <form method="POST">
+        <form method="POST" className='text-center'>
+            <h5>{props.fileName.help_page.contactFormTitle}</h5>
             <div className="mb-3 pt-0">
                 <input
                     type="text"
-                    placeholder="Your name"
+                    placeholder={props.fileName.help_page.nameLabel}
                     name="name"
-                    className="px-3 py-3 placeholder-gray-400 text-gray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none"
+                    className="px-3 py-3 placeholder-gray-400 text-gray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none w-100"
                     required
                 />
             </div>
             <div className="mb-3 pt-0">
                 <input
                     type="email"
-                    placeholder="Topic"
+                    placeholder={props.fileName.help_page.topicLabel}
                     name="topic"
-                    className="px-3 py-3 placeholder-gray-400 text-gray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none"
+                    className="px-3 py-3 placeholder-gray-400 text-gray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none w-100"
                     required
                 />
             </div>
             <div className="mb-3 pt-0">
                 <textarea
-                    placeholder="Your message"
+                    placeholder={props.fileName.help_page.messageLabel}
                     name="message"
-                    className="px-3 py-3 placeholder-gray-400 text-gray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full"
+                    rows={5}
+                    className="px-3 py-3 placeholder-gray-400 text-gray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring w-100"
                     required
                 />
             </div>
@@ -63,7 +38,7 @@ const ContactForm = () => {
                 <button
                     className="btn btn-primary text-white text-sm shadow-none"
                     type="submit">
-                    Send a message
+                    {props.fileName.help_page.sendMessage}
                 </button>
             </div>
         </form>
@@ -71,17 +46,22 @@ const ContactForm = () => {
 }
 
 const HelpUser = props => {
+    const current_user = JSON.parse(localStorage.getItem("user"));
+    const slovenian = current_user.slovenian;
+    var translationFile = slovenian ? slo : en
     return (
         <div>
             <h2 className="page-header">
-                User support
+                {translationFile.titles.help}
             </h2>
             <div>
-                <Faq
-                    data={data}
-                    styles={styles}
-                    config={config}
-                />
+                <p> {translationFile.help_page.friSite}: &nbsp;
+                    <Link to={"https://fri.uni-lj.si/sl/studij"} className="text-primary">https://fri.uni-lj.si/sl/studij</Link>
+                </p>
+                <p>{translationFile.help_page.questions}</p>
+                <div className='contactForm'>
+                    <ContactForm fileName={translationFile} />
+                </div>
             </div>
         </div>
     );

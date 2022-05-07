@@ -5,6 +5,8 @@ import { Alert } from "react-bootstrap";
 import user_image from '../assets/images/userpng1.png';
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye } from '@fortawesome/free-solid-svg-icons';
 
 const ErrorMessage = ({ variant = "danger", children }) => {
     return (
@@ -19,6 +21,7 @@ export default function Login(props) {
     const [password, setPassword] = useState("");
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [passwordShown, setPasswordShown] = useState(false);
     const navigate = useNavigate();
 
     function validateForm() {
@@ -34,8 +37,17 @@ export default function Login(props) {
                 },
             }
             await Axios.post(`http://localhost:3001/users/signin`, { email, password }, config).then((res) => {
-                console.log(res.data);
-                localStorage.setItem("user", JSON.stringify(res.data))
+                const u = {
+                    _id: res.data._id,
+                    name: res.data.name,
+                    surname: res.data.surname,
+                    email: res.data.email,
+                    groups: res.data.groups,
+                    slovenian: res.data.slovenian,
+                    token: res.data.token
+                }
+                localStorage.setItem("user", JSON.stringify(u))
+                props.login({ isLogin: true, token: "Elena" })
                 navigate("/user/reservations");
                 window.location.reload();
             });
@@ -45,6 +57,10 @@ export default function Login(props) {
             setErrorMessage(error.response.data.error);
         };
     }
+
+    const togglePassword = () => {
+        setPasswordShown(!passwordShown);
+    };
 
     return (
         <div className="logInWrapper fadeInDown position-absolute bgImage">
@@ -64,13 +80,16 @@ export default function Login(props) {
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </Form.Group>
-                        <Form.Group size="lg" controlId="password">
+                        <Form.Group size="lg" controlId="password" className="passwordGroup">
                             <Form.Label>Password</Form.Label>
                             <Form.Control
-                                type="password"
+                                type={passwordShown ? "text" : "password"}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
+                            <div className="eyeIconDiv">
+                                <span id="eyeIcon" onClick={togglePassword}><FontAwesomeIcon icon={faEye} /></span>
+                            </div>
                         </Form.Group>
                         <Button block size="lg" type="submit" disabled={!validateForm()} className="mt-3">
                             Login

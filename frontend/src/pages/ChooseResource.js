@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import ResourceCard from "../components/ResourceCard";
 import Select from "react-select";
 import Axios from "axios";
+import slo from "../translations/slo.json";
+import en from "../translations/en.json";
 
 
 class ChooseResource extends Component {
@@ -13,8 +15,10 @@ class ChooseResource extends Component {
             resouceGroups: [],
             selectedGroup: "",
             searchString: "",
-            user: JSON.parse(localStorage.getItem("user"))
+            user: JSON.parse(localStorage.getItem("user")),
         }
+        this.slovenian = this.state.user.slovenian
+        this.translationFile = this.slovenian ? slo : en
     }
 
     componentDidMount() {
@@ -44,11 +48,11 @@ class ChooseResource extends Component {
         return (
             <div>
                 <h2 className="page-header">
-                    Resources
+                    {this.translationFile.titles.resources}
                 </h2>
                 <div className="mb-5" style={{ marginLeft: "2%" }}>
                     <div className="customSearch mb-2" style={{ width: "40%" }}>
-                        <input type="text" placeholder='Search by name...' onChange={(e) => {
+                        <input type="text" placeholder={this.translationFile.resources_page.search} onChange={(e) => {
                             this.setState({
                                 searchString: e.target.value.toLowerCase(),
                             });
@@ -72,7 +76,7 @@ class ChooseResource extends Component {
                     {this.state.resources.map((value) => {
                         if (value.gropus.some(item => this.state.user.groups.includes(item))) {     //chang value.gropus to groups
                             if (value.name.toLowerCase().includes(this.state.searchString)) {
-                                if (this.state.selectedGroup == "" || value.gropus.includes(this.state.selectedGroup)) {
+                                if (this.state.selectedGroup === "" || value.gropus.includes(this.state.selectedGroup)) {
                                     return (
                                         <div className="col-md-3 mb-3" key={value.name}>
                                             <ResourceCard note={value.note} description={value.describtion} image={value.image} id={value._id} />

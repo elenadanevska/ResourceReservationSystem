@@ -1,0 +1,65 @@
+{
+    "menu": {
+        "reservations": "Rezervacije",
+        "resources": "Izaberi Resors",
+        "history": "Zgodovina",
+        "help": "Pomoč"
+    },
+    "titles": {
+        "reservations": "Rezervacije",
+        "resources": "Resurse",
+        "history": "Pretekle Rezervacije",
+        "help": "Pomoč Uporabnika",
+        "reserve": "Rezerviraj",
+        "profile": "Profil"
+    },
+    "reservations_page": {
+        "resource_name": "Ime Resorsa",
+        "date": "Datum",
+        "time": "Čas",
+        "actions": "Akcije",
+        "search": "Preiskaj rezervacije...",
+        "not_found": "Ni rezultatov"
+    },
+    "resources_page": {
+        "search": "Poiskaj po imenu",
+        "button": {
+            "reserve": "Rezerviraj",
+            "close": "Zapri",
+            "free": "Prosto",
+            "owned": "Moje",
+            "selected": "Izbrano",
+            "busy": "Zasedano"
+        },
+        "pick_date": "Izaberi datum",
+        "tommorow": "Naslednji dan",
+        "yesterday": "Prejšni dan"
+    },
+    "history_page": {
+        "from_date": "Od",
+        "to_date": "Do",
+        "show_button": "Prikaži"
+    },
+    "help_page": {
+        "friSite": "Več o tej strani najdete na spletni strani Fakultete za računalništvo in informatiko, Univerze v Ljubljani",
+        "questions": "Če imate kakršne koli težave ali vprašanja, nas lahko kontaktirate tudi preko spodnjega kontaktnega obrazca",
+        "nameLabel": "Vaše ime",
+        "topicLabel": "Tema",
+        "messageLabel": "Vaše sporočilo",
+        "contactFormTitle": "Kontaktiraj nas",
+        "sendMessage": "Pošlji sporočilo"
+    },
+    "profile_page": {
+        "infoTitle": "Osebne Podatke",
+        "nameSurname": "Ime in primek",
+        "language": "Jezik",
+        "groups": "Skupine",
+        "email": "E-poštni naslov",
+        "role": "Vloga",
+        "student": "Študent"
+    },
+    "dropdown": {
+        "profile": "Profil",
+        "signout": "Odjava"
+    }
+}

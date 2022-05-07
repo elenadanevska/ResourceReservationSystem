@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import Axios from "axios";
 import Table from "react-bootstrap/Table";
+import slo from "../translations/slo.json";
+import en from "../translations/en.json";
 
 const History = () => {
-    var date = new Date();
-    const [fromDate, setFromDate] = useState(date);
-    const [toDate, setToDate] = useState(date);
+    const [fromDate, setFromDate] = useState(new Date());
+    const [toDate, setToDate] = useState(new Date());
     const [showHistory, setShowHistory] = useState(false);
     const [reservations, setReservations] = useState([]);
     const [resources, setResources] = useState({});
@@ -14,6 +15,8 @@ const History = () => {
     const [sortResourceUp, setSortResourceUp] = useState(true);
     const current_user = JSON.parse(localStorage.getItem("user"));
     let skipped = 0;
+    let slovenian = current_user.slovenian;
+    let translationFile = slovenian ? slo : en
 
     useEffect(() => {
         Axios.get(`http://localhost:3001/reservations/user/${current_user._id}`).then((response) => {
@@ -26,6 +29,9 @@ const History = () => {
                     setResources(resources => ({ ...resources, ...newResource }))
                 });
             })
+            var prevDate = fromDate;
+            prevDate.setDate(fromDate.getDate() - 30);
+            setFromDate(new Date(prevDate));
         });
     }, []);
 
@@ -34,19 +40,19 @@ const History = () => {
             <thead className="bg-info">
                 <tr>
                     <th scope="col"></th>
-                    <th scope="col">Resource Name
+                    <th scope="col">{translationFile.reservations_page.resource_name}
                         <span className='arrows'>
                             <button className="up-arrow" onClick={() => sortResource()}></button>
                             <button className="down-arrow" onClick={() => sortResource()}></button>
                         </span>
                     </th>
-                    <th scope="col">Date
+                    <th scope="col">{translationFile.reservations_page.date}
                         <span className='arrows'>
                             <button className="up-arrow" onClick={() => sortDate()}></button>
                             <button className="down-arrow" onClick={() => sortDate()}></button>
                         </span>
                     </th>
-                    <th scope="col">Time</th>
+                    <th scope="col">{translationFile.reservations_page.time}</th>
                 </tr>
             </thead>
         );
@@ -57,22 +63,22 @@ const History = () => {
             <div className="row containerr">
                 <div className="col text-center"></div>
                 <div className="col text-center">
-                    From Date:
+                    {translationFile.history_page.from_date}
                     <DatePicker
                         selected={fromDate}
                         onSelect={onFromDateChange}
                         dateFormat="dd-MM-yyyy"
-                        maxDate={date}
+                        maxDate={new Date()}
                         className="datepicker"
                     />
                 </div>
                 <div className="col text-center">
-                    To Date:
+                    {translationFile.history_page.to_date}
                     <DatePicker
                         selected={toDate}
                         onSelect={onToDateChange}
                         dateFormat="dd-MM-yyyy"
-                        maxDate={date}
+                        maxDate={new Date()}
                         className="datepicker"
                     />
                 </div>
@@ -134,7 +140,7 @@ const History = () => {
             }
         })
         if (notFound) {
-            return <div>No results found</div>
+            return <div>{translationFile.reservations_page.not_found}</div>
         } else {
             return <Table striped bordered hover className="bg-light">
                 {TableHeader()}
@@ -146,11 +152,13 @@ const History = () => {
     return (
         <div>
             <h2 className="page-header">
-                Previous Reservations
+                {translationFile.titles.history}
             </h2>
             <DatePickers />
             <div className="text-center mt-5">
-                <button type="button" onClick={handleShow} className="btn btn-primary">Show</button>
+                <button type="button" onClick={handleShow} className="btn btn-primary">
+                    {translationFile.history_page.show_button}
+                </button>
             </div>
             <div className={`mt-5 ${showHistory ? "" : "d-none"}`}>
                 <div className="container result">

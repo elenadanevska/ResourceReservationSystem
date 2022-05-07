@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Resource = require("../models/resource");
 const { checkValidationResult, resourceValidator } = require("../validators/resourceValidator");
+const { authMiddleware } = require("../middlewares/authMiddleware");
 
 //get all resources
 router.get("/", (req, res) => {

@@ -3,6 +3,8 @@ import DeleteButton from '../components/buttons/DeleteButton';
 import Table from "react-bootstrap/Table";
 import ShowButton from "../components/buttons/ShowButton";
 import Axios from "axios";
+import slo from "../translations/slo.json";
+import en from "../translations/en.json";
 
 const Reservations = () => {
 
@@ -13,6 +15,8 @@ const Reservations = () => {
     const [sortResourceUp, setSortResourceUp] = useState(true);
     const user = JSON.parse(localStorage.getItem("user"));
     let skipped = 0;
+    let slovenian = user.slovenian;
+    let translationFile = slovenian ? slo : en
 
     useEffect(() => {
         Axios.get(`http://localhost:3001/reservations/user/${user._id}`).then((response) => {
@@ -37,20 +41,20 @@ const Reservations = () => {
             <thead className="bg-info">
                 <tr>
                     <th scope="col"></th>
-                    <th scope="col">Resource Name
+                    <th scope="col">{translationFile.reservations_page.resource_name}
                         <span className='arrows'>
                             <button className="up-arrow" onClick={() => sortResource()}></button>
                             <button className="down-arrow" onClick={() => sortResource()}></button>
                         </span>
                     </th>
-                    <th scope="col">Date
+                    <th scope="col">{translationFile.reservations_page.date}
                         <span className='arrows'>
                             <button className="up-arrow" onClick={() => sortDate()}></button>
                             <button className="down-arrow" onClick={() => sortDate()}></button>
                         </span>
                     </th>
-                    <th scope="col">Time</th>
-                    <th scope="col">Actions</th>
+                    <th scope="col">{translationFile.reservations_page.time}</th>
+                    <th scope="col">{translationFile.reservations_page.actions}</th>
                 </tr>
             </thead >
         );
@@ -63,7 +67,8 @@ const Reservations = () => {
                 const reservationDate = cutDate(value.date);
                 const resourceName = resources[value.resource];
                 const reservationTime = value.time;
-                if ((resourceName != undefined && resourceName.toLowerCase().includes(searchString)) ||
+                /* if (new Date(reservationDate + ' ' + reservationTime.split(" ")[0]) >= new Date()) {*/
+                if ((resourceName !== undefined && resourceName.toLowerCase().includes(searchString)) ||
                     reservationDate.includes(searchString) || reservationTime.includes(searchString)) {
                     notFound = false;
                     return <tbody key={value._id}>
@@ -84,7 +89,7 @@ const Reservations = () => {
             }
         });
         if (notFound) {
-            return <div>No results found</div>
+            return <div>{translationFile.reservations_page.not_found}</div>
         } else {
             return <Table striped bordered hover className="bg-light">
                 {TableHeader()}
@@ -115,11 +120,11 @@ const Reservations = () => {
     return (
         <div>
             <h2 className="page-header">
-                Reservations
+                {translationFile.titles.reservations}
             </h2>
             <div className="container">
                 <div className="customSearch mb-4" style={{ width: "40%" }}>
-                    <input type="text" placeholder='Search reservations...' onChange={(e) => {
+                    <input type="text" placeholder={translationFile.reservations_page.search} onChange={(e) => {
                         SetSearchString(e.target.value.toLowerCase());
                     }} />
                 </div>

@@ -3,6 +3,7 @@ const router = express.Router();
 const Reservation = require("../models/reservation");
 const Resource = require("../models/resource");
 const User = require("../models/user");
+const { authMiddleware } = require("../middlewares/authMiddleware");
 
 //get all reservations 
 router.get("/", (req, res) => {
@@ -35,7 +36,7 @@ router.get("/:id", (req, res) => {
     const id = req.params.id;
     /*if date*/
     const date = new Date(req.query.date);
-    date.setHours(0, 0, 0, 0);
+    date.setHours(1, 0, 0, 0);
     Resource.findById(id).then((found_resource) => {
         Reservation.find({ 'resource': found_resource, 'date': date })
             .then((result) => {
@@ -53,8 +54,8 @@ router.get("/:id", (req, res) => {
 router.post("/:id", (req, res) => {
     const resourceId = req.params.id;
     const date = new Date(req.body.params.date);
+    date.setHours(1, 0, 0, 0);
     const userId = req.body.params.userId;
-    date.setHours(0, 0, 0, 0);
     User.findById(userId).then((current_user) => {
         Resource.findById(resourceId).then((found_resource) => {
             for (let i = 0; i < req.body.params.selectedTimeSlot.length; i++) {

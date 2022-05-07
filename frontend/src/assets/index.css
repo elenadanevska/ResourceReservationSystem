@@ -204,6 +204,11 @@ input {
     color: #349eff;
 }
 
+.reservationButtons button:disabled {
+    opacity: .6;
+    color: #c0c3c6;
+}
+
 /*LOGIN*/
 
 .formContent {
@@ -218,6 +223,24 @@ input {
     -webkit-box-shadow: 0 30px 60px 0 rgba(0, 0, 0, 0.3);
     box-shadow: 0 30px 60px 0 rgba(0, 0, 0, 0.3);
     text-align: center;
+}
+
+#eyeIcon {
+    cursor: pointer;
+    z-index: 9999;
+    position: absolute;
+    top: 35%;
+    float: right;
+}
+
+.eyeIconDiv {
+    float: right;
+    margin-right: 8%;
+}
+
+.passwordGroup {
+    display: inline;
+    position: relative;
 }
 
 .Login form {
@@ -312,6 +335,7 @@ input {
 
 .proLabels {
     font-weight: bold;
+    width: 100%;
 }
 
 .box {
@@ -337,7 +361,15 @@ input {
     display: none;
 }
 
-@media only screen and (max-width: 1280px) {
+/*CONTACT FORM*/
+
+.contactForm {
+    width: 50%;
+    margin: auto;
+    margin-top: 8%
+}
+
+@media only screen and (max-width: 1025px) {
     .sidebar {
         display: none;
     }
@@ -370,4 +402,49 @@ input {
     .nameSurname {
         display: block;
     }
+
+}
+
+@media only screen and (max-width: 760px) {
+    .sidebar {
+        display: none;
+    }
+
+    .content {
+        padding-left: 0px
+    }
+
+    .sidebarLogo {
+        display: inline;
+        position: absolute;
+    }
+
+    .smallScreenMenu {
+        width: 80%;
+        margin-left: 0%;
+        display: flex;
+        text-align: center;
+    }
+
+    .mobile {
+        display: none;
+    }
+
+    .topnav {
+        background-color: #dedede;
+        height: 90px;
+    }
+
+    .profileLeft {
+        display: none;
+    }
+
+    .nameSurname {
+        display: block;
+    }
+
+    .menuText {
+        display: none;
+    }
+
 }

@@ -6,6 +6,8 @@ import { faSignOut, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "bootstrap/dist/js/bootstrap.min.js";
 import { useNavigate } from "react-router-dom";
+import slo from "../translations/slo.json";
+import en from "../translations/en.json";
 import Sidebar from "./Sidebar";
 import Axios from "axios";
 
@@ -14,12 +16,14 @@ export default function Topnav(props) {
 
     const [name, setName] = useState("");
     const [surname, setSurname] = useState("");
+    const [translationFile, setTranslationFile] = useState(en)
     const navigate = useNavigate();
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
-        if (user && user.token) {
+        if (user) {
             console.log(user);
+            setTranslationFile(user.slovenian ? slo : en)
             setName(user.name);
             setSurname(user.surname);
         } else {
@@ -33,12 +37,11 @@ export default function Topnav(props) {
                 console.log("signing out...")
             });
             localStorage.removeItem("user");
-            navigate("/");
-            window.location.reload()
+            navigate("/login");
         } catch (error) {
             console.log(error);
         };
-
+        window.location.reload()
     }
 
     return (
@@ -59,9 +62,9 @@ export default function Topnav(props) {
                             </div>
                         </Link>
                         <ul className="dropdown-menu dropdown-menu-light text-small shadow" aria-labelledby="dropdown">
-                            <Link className="dropdown-item" to="/user/profile" ><FontAwesomeIcon icon={faUserCircle} />    Profile</Link>
+                            <Link className="dropdown-item" to="/user/profile" ><FontAwesomeIcon icon={faUserCircle} />    {translationFile.dropdown.profile}</Link>
                             <hr className="dropdown-divider" />
-                            <button className="dropdown-item" onClick={handleLogout}><FontAwesomeIcon icon={faSignOut} />    Sign out</button>
+                            <button className="dropdown-item" onClick={handleLogout}><FontAwesomeIcon icon={faSignOut} />    {translationFile.dropdown.signout}</button>
                         </ul>
                     </li>
                 </div>

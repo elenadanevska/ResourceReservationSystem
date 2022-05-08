@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import Axios from "axios";
 import Table from "react-bootstrap/Table";
-import slo from "../translations/slo.json";
-import en from "../translations/en.json";
+import { translate, cmp, cutDate } from '../helpers/Helpers';
 
 const History = () => {
     const [fromDate, setFromDate] = useState(new Date());
@@ -16,14 +15,19 @@ const History = () => {
     const current_user = JSON.parse(localStorage.getItem("user"));
     let skipped = 0;
     let slovenian = current_user.slovenian;
-    let translationFile = slovenian ? slo : en
 
     useEffect(() => {
-        Axios.get(`http://localhost:3001/reservations/user/${current_user._id}`).then((response) => {
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${current_user.token}`
+            }
+        }
+        Axios.get(`http://localhost:3001/reservations/user/${current_user._id}`, config).then((response) => {
             let data = response.data;
             setReservations(response.data);
             data.forEach(res => {
-                Axios.get(`http://localhost:3001/resources/${res.resource}`).then((r) => {
+                Axios.get(`http://localhost:3001/resources/${res.resource}`, config).then((r) => {
                     let newResource = {};
                     newResource[r.data._id] = r.data.name;
                     setResources(resources => ({ ...resources, ...newResource }))
@@ -40,19 +44,19 @@ const History = () => {
             <thead className="bg-info">
                 <tr>
                     <th scope="col"></th>
-                    <th scope="col">{translationFile.reservations_page.resource_name}
+                    <th scope="col">{translate("reservations_page.resource_name", slovenian)}
                         <span className='arrows'>
                             <button className="up-arrow" onClick={() => sortResource()}></button>
                             <button className="down-arrow" onClick={() => sortResource()}></button>
                         </span>
                     </th>
-                    <th scope="col">{translationFile.reservations_page.date}
+                    <th scope="col">{translate("reservations_page.date", slovenian)}
                         <span className='arrows'>
                             <button className="up-arrow" onClick={() => sortDate()}></button>
                             <button className="down-arrow" onClick={() => sortDate()}></button>
                         </span>
                     </th>
-                    <th scope="col">{translationFile.reservations_page.time}</th>
+                    <th scope="col">{translate("reservations_page.time", slovenian)}</th>
                 </tr>
             </thead>
         );
@@ -63,7 +67,7 @@ const History = () => {
             <div className="row containerr">
                 <div className="col text-center"></div>
                 <div className="col text-center">
-                    {translationFile.history_page.from_date}
+                    {translate("history_page.from_date", slovenian)}
                     <DatePicker
                         selected={fromDate}
                         onSelect={onFromDateChange}
@@ -73,7 +77,7 @@ const History = () => {
                     />
                 </div>
                 <div className="col text-center">
-                    {translationFile.history_page.to_date}
+                    {translate("history_page.to_date", slovenian)}
                     <DatePicker
                         selected={toDate}
                         onSelect={onToDateChange}
@@ -102,12 +106,6 @@ const History = () => {
         setShowHistory(false);
     };
 
-    function cmp(a, b, up) {
-        if (a > b) return up ? 1 : -1;
-        if (a < b) return up ? -1 : 1;
-        return 0;
-    }
-
     function sortDate() {
         let r = reservations.sort((a, b) => cmp(a.date, b.date, sortDateUp) || cmp(a.time, b.time, sortDateUp));
         setReservations(r);
@@ -131,7 +129,7 @@ const History = () => {
                     <tr>
                         <td>{index + 1 - skipped}</td>
                         <td>{resources[value.resource]}</td>
-                        <td>{value.date.slice(0, 10).split('-').reverse().join('/')}</td>
+                        <td>{cutDate(value.date)}</td>
                         <td>{value.time}</td>
                     </tr>
                 </tbody>
@@ -140,7 +138,7 @@ const History = () => {
             }
         })
         if (notFound) {
-            return <div>{translationFile.reservations_page.not_found}</div>
+            return <div>{translate("reservations_page.not_found", slovenian)}</div>
         } else {
             return <Table striped bordered hover className="bg-light">
                 {TableHeader()}
@@ -152,12 +150,12 @@ const History = () => {
     return (
         <div>
             <h2 className="page-header">
-                {translationFile.titles.history}
+                {translate("titles.history", slovenian)}
             </h2>
             <DatePickers />
             <div className="text-center mt-5">
                 <button type="button" onClick={handleShow} className="btn btn-primary">
-                    {translationFile.history_page.show_button}
+                    {translate("history_page.show_button", slovenian)}
                 </button>
             </div>
             <div className={`mt-5 ${showHistory ? "" : "d-none"}`}>

@@ -3,8 +3,8 @@ import DeleteButton from '../components/buttons/DeleteButton';
 import Table from "react-bootstrap/Table";
 import ShowButton from "../components/buttons/ShowButton";
 import Axios from "axios";
-import slo from "../translations/slo.json";
-import en from "../translations/en.json";
+import { translate, cmp, cutDate } from '../helpers/Helpers';
+
 
 const Reservations = () => {
 
@@ -16,14 +16,19 @@ const Reservations = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     let skipped = 0;
     let slovenian = user.slovenian;
-    let translationFile = slovenian ? slo : en
 
     useEffect(() => {
-        Axios.get(`http://localhost:3001/reservations/user/${user._id}`).then((response) => {
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user.token}`
+            }
+        }
+        Axios.get(`http://localhost:3001/reservations/user/${user._id}`, config).then((response) => {
             let data = response.data;
             setReservations(data);
             data.forEach(res => {
-                Axios.get(`http://localhost:3001/resources/${res.resource}`).then((r) => {
+                Axios.get(`http://localhost:3001/resources/${res.resource}`, config).then((r) => {
                     let newResource = {};
                     newResource[r.data._id] = r.data.name;
                     setResources(resources => ({ ...resources, ...newResource }))
@@ -32,29 +37,25 @@ const Reservations = () => {
         });
     }, []);
 
-    function cutDate(date) {
-        return date.slice(0, 10).split('-').reverse().join('/');
-    }
-
     function TableHeader() {
         return (
             <thead className="bg-info">
                 <tr>
                     <th scope="col"></th>
-                    <th scope="col">{translationFile.reservations_page.resource_name}
+                    <th scope="col">{translate("reservations_page.resource_name", slovenian)}
                         <span className='arrows'>
                             <button className="up-arrow" onClick={() => sortResource()}></button>
                             <button className="down-arrow" onClick={() => sortResource()}></button>
                         </span>
                     </th>
-                    <th scope="col">{translationFile.reservations_page.date}
+                    <th scope="col">{translate("reservations_page.date", slovenian)}
                         <span className='arrows'>
                             <button className="up-arrow" onClick={() => sortDate()}></button>
                             <button className="down-arrow" onClick={() => sortDate()}></button>
                         </span>
                     </th>
-                    <th scope="col">{translationFile.reservations_page.time}</th>
-                    <th scope="col">{translationFile.reservations_page.actions}</th>
+                    <th scope="col">{translate("reservations_page.time", slovenian)}</th>
+                    <th scope="col">{translate("reservations_page.actions", slovenian)}</th>
                 </tr>
             </thead >
         );
@@ -89,19 +90,13 @@ const Reservations = () => {
             }
         });
         if (notFound) {
-            return <div>{translationFile.reservations_page.not_found}</div>
+            return <div>{translate("reservations_page.not_found", slovenian)}</div>
         } else {
             return <Table striped bordered hover className="bg-light">
                 {TableHeader()}
                 {tableBody}
             </Table>
         }
-    }
-
-    function cmp(a, b, up) {
-        if (a > b) return up ? 1 : -1;
-        if (a < b) return up ? -1 : 1;
-        return 0;
     }
 
     function sortDate() {
@@ -120,11 +115,11 @@ const Reservations = () => {
     return (
         <div>
             <h2 className="page-header">
-                {translationFile.titles.reservations}
+                {translate("titles.reservations", slovenian)}
             </h2>
             <div className="container">
                 <div className="customSearch mb-4" style={{ width: "40%" }}>
-                    <input type="text" placeholder={translationFile.reservations_page.search} onChange={(e) => {
+                    <input type="text" placeholder={translate("reservations_page.search", slovenian)} onChange={(e) => {
                         SetSearchString(e.target.value.toLowerCase());
                     }} />
                 </div>

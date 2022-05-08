@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import ResourceCard from "../components/ResourceCard";
 import Select from "react-select";
 import Axios from "axios";
-import slo from "../translations/slo.json";
-import en from "../translations/en.json";
+import { translate } from '../helpers/Helpers';
 
 
 class ChooseResource extends Component {
@@ -18,17 +17,22 @@ class ChooseResource extends Component {
             user: JSON.parse(localStorage.getItem("user")),
         }
         this.slovenian = this.state.user.slovenian
-        this.translationFile = this.slovenian ? slo : en
     }
 
     componentDidMount() {
         try {
-            Axios.get("http://localhost:3001/resources").then((response) => {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${this.state.user.token}`
+                }
+            }
+            Axios.get("http://localhost:3001/resources", config).then((response) => {
                 this.setState({ resources: response.data });
                 if (this.state.user.groups.length > 1) {
                     let resourceOption = [{ value: "", label: "Select All" }];
                     let uniqe = [];
-                    response.data.map(resource => resource.gropus.forEach(element => {
+                    response.data.map(resource => resource.groups.forEach(element => {
                         if (!uniqe.includes(element)) {
                             if (this.state.user.groups.includes(element)) {
                                 resourceOption.push({ value: element, label: element });
@@ -48,11 +52,11 @@ class ChooseResource extends Component {
         return (
             <div>
                 <h2 className="page-header">
-                    {this.translationFile.titles.resources}
+                    {translate("titles.resources", this.slovenian)}
                 </h2>
                 <div className="mb-5" style={{ marginLeft: "2%" }}>
                     <div className="customSearch mb-2" style={{ width: "40%" }}>
-                        <input type="text" placeholder={this.translationFile.resources_page.search} onChange={(e) => {
+                        <input type="text" placeholder={translate("resources_page.search", this.slovenian)} onChange={(e) => {
                             this.setState({
                                 searchString: e.target.value.toLowerCase(),
                             });
@@ -74,9 +78,9 @@ class ChooseResource extends Component {
                 </div>
                 <div className="row container">
                     {this.state.resources.map((value) => {
-                        if (value.gropus.some(item => this.state.user.groups.includes(item))) {     //chang value.gropus to groups
+                        if (value.groups.some(item => this.state.user.groups.includes(item))) {
                             if (value.name.toLowerCase().includes(this.state.searchString)) {
-                                if (this.state.selectedGroup === "" || value.gropus.includes(this.state.selectedGroup)) {
+                                if (this.state.selectedGroup === "" || value.groups.includes(this.state.selectedGroup)) {
                                     return (
                                         <div className="col-md-3 mb-3" key={value.name}>
                                             <ResourceCard note={value.note} description={value.describtion} image={value.image} id={value._id} />

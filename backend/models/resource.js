@@ -6,7 +6,7 @@ const ResourceSchema = new Schema({
     describtion: { type: String },
     image_name: { type: String },
     note: { type: String },
-    gropus: [{ type: String }],
+    groups: [{ type: String }],
 }, { timestamps: true });
 
 const Resource = mongoose.model("Resource", ResourceSchema);

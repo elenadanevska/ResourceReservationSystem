@@ -4,10 +4,10 @@ import Axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useParams } from 'react-router-dom';
-import slo from "../translations/slo.json";
-import en from "../translations/en.json";
+import { translate, getDateTimeString, getPrevNextDay } from '../helpers/Helpers';
 
-const ReserveDayTime = proFps => {
+
+const ReserveDayTime = props => {
     const [bookingDate, setBookingDate] = useState(new Date());
     const [busy, setBusy] = useState([]);
     const [owned, setOwned] = useState([]);
@@ -23,22 +23,25 @@ const ReserveDayTime = proFps => {
         "13:30 - 14:00", "14:30 - 15:00", "15:00 - 15:30", "15:30 - 16:00", "16:00 - 16:30", "16:30 - 17:00",
     ];
     let dayOfWeek = bookingDate.getDay()
-    let exactDate = eval(bookingDate.getMonth() + 1) + "/" + bookingDate.getDate() + "/" + bookingDate.getFullYear();
-    bookingDate.getDate()
 
     useEffect(() => {
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${current_user.token}`
+            }
+        }
         Axios.get(`http://localhost:3001/reservations/${id}`, {
             params: {
                 date: bookingDate,
             }
-        }).then((response) => {
-            console.log(response.data)
+        }, config).then((response) => {
             setOwnedReserved(response.data)
         }).catch(errors => {
             console.error(errors);
         });
 
-        Axios.get(`http://localhost:3001/resources/${id}`).then((response) => {
+        Axios.get(`http://localhost:3001/resources/${id}`, config).then((response) => {
             console.log(response.data["name"]);
             setResourceName(response.data["name"])
         }).catch(errors => {
@@ -102,14 +105,6 @@ const ReserveDayTime = proFps => {
         setReserve([]);
     }
 
-    function changeDateTommorow(up) {
-        var tommorow = bookingDate;
-        if (up) tommorow.setDate(bookingDate.getDate() + 1);
-        else tommorow.setDate(bookingDate.getDate() - 1);
-        setBookingDate(new Date(tommorow));
-        setReserve([]);
-    }
-
     const CalenderTimeSlot = (props) => {
         return <div>
             {props.i}
@@ -120,16 +115,19 @@ const ReserveDayTime = proFps => {
 
     return (
         <div className="container mt-5">
-            <h3 className="page-header">{slovenian ? slo.titles.reserve : en.titles.reserve}</h3>
+            <h3 className="page-header">{translate("titles.reserve", slovenian)}</h3>
             <h5 className='mb-4 mt-2 text-center text-primary'>{resourceName.toUpperCase()}</h5>
             <div className="row">
                 <div className='mt-3 col'>
-                    <span className='calendarArrow' onClick={e => changeDateTommorow(false)}>{"<- "}
-                        {slovenian ? slo.resources_page.yesterday : en.resources_page.yesterday}
+                    <span className='calendarArrow' onClick={e => {
+                        setBookingDate(getPrevNextDay(false, bookingDate))
+                        setReserve([])
+                    }}>{"<- "}
+                        {translate("resources_page.yesterday", slovenian)}
                     </span>
                 </div>
                 <div className='mb-3 text-center col'>
-                    {slovenian ? slo.resources_page.pick_date : en.resources_page.pick_date}
+                    {translate("resources_page.pick_date", slovenian)}
                     <DatePicker
                         selected={bookingDate}
                         onSelect={onDateChange}
@@ -141,8 +139,11 @@ const ReserveDayTime = proFps => {
                     />
                 </div>
                 <div className='mt-3 col text-end'>
-                    <span className='calendarArrow' onClick={e => changeDateTommorow(true)}>
-                        {slovenian ? slo.resources_page.tommorow : en.resources_page.tommorow}
+                    <span className='calendarArrow' onClick={e => {
+                        setBookingDate(getPrevNextDay(true, bookingDate))
+                        setReserve([])
+                    }}>
+                        {translate("resources_page.tommorow", slovenian)}
                         {" ->"}
                     </span>
                 </div>
@@ -154,21 +155,21 @@ const ReserveDayTime = proFps => {
                     }
                     if (busy.includes(i)) {
                         return <button className={`col btn-danger`} key={i} disabled>
-                            <CalenderTimeSlot buttonText={slovenian ? slo.resources_page.button.busy : en.resources_page.button.busy} style="txt-secondary" i={i} />
+                            <CalenderTimeSlot buttonText={translate("resources_page.button.busy", slovenian)} style="txt-secondary" i={i} />
                         </button>
                     } else if (owned.includes(i)) {
                         return <button className={`col btn-primary`} key={i} disabled>
-                            <CalenderTimeSlot buttonText={slovenian ? slo.resources_page.button.owned : en.resources_page.button.owned} style="txt-secondary" i={i} />
+                            <CalenderTimeSlot buttonText={translate("resources_page.button.owned", slovenian)} style="txt-secondary" i={i} />
                         </button>
                     } else if (reserve.includes(i)) {
                         return <button className={`col btn-info`} key={i}
                             onClick={() => handleTimeSelect(i)}>
-                            <CalenderTimeSlot buttonText={slovenian ? slo.resources_page.button.selected : en.resources_page.button.selected} style="" i={i} />
+                            <CalenderTimeSlot buttonText={translate("resources_page.button.selected", slovenian)} style="" i={i} />
                         </button>
                     } else {
                         return <button className={`col btn-secondary`} key={i}
-                            disabled={(new Date() > new Date((exactDate + ' ' + i.split(" ")[0])) || dayOfWeek === 6 || dayOfWeek === 0) ? true : false} onClick={() => handleTimeSelect(i)}>
-                            <CalenderTimeSlot buttonText={slovenian ? slo.resources_page.button.free : en.resources_page.button.free} style="txt-secondary" i={i} />
+                            disabled={(new Date() > new Date(getDateTimeString(bookingDate, i)) || dayOfWeek === 6 || dayOfWeek === 0) ? true : false} onClick={() => handleTimeSelect(i)}>
+                            <CalenderTimeSlot buttonText={translate("resources_page.button.free", slovenian)} style="txt-secondary" i={i} />
                         </button>
                     }
                 })}
@@ -176,7 +177,7 @@ const ReserveDayTime = proFps => {
             <div className='mt-5 row text-center'>
                 <div className="col">
                     <button className="btn bg-primary text-white" onClick={() => handleSubmit()} disabled={reserve.length === 0 ? true : false}>
-                        {slovenian ? slo.resources_page.button.reserve : en.resources_page.button.reserve}
+                        {translate("resources_page.button.reserve", slovenian)}
                     </button>
                 </div>
             </div>

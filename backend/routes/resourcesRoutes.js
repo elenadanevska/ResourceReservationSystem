@@ -5,7 +5,7 @@ const { checkValidationResult, resourceValidator } = require("../validators/reso
 const { authMiddleware } = require("../middlewares/authMiddleware");
 
 //get all resources
-router.get("/", (req, res) => {
+router.get("/", authMiddleware, (req, res) => {
     Resource.find()
         .then((result) => {
             res.send(result);
@@ -16,7 +16,7 @@ router.get("/", (req, res) => {
 });
 
 //get resource by id
-router.get("/:id", (req, res) => {
+router.get("/:id", authMiddleware, (req, res) => {
     const id = req.params.id.toString().trim();
     Resource.findById(id)
         .then((result) => {
@@ -28,11 +28,11 @@ router.get("/:id", (req, res) => {
 });
 
 //insert new resource
-router.post("/", resourceValidator, checkValidationResult, (req, res) => {
+router.post("/", authMiddleware, resourceValidator, checkValidationResult, (req, res) => {
     const resourceName = req.body.name;
     const resourceDescription = req.body.description;
     const resourceNote = req.body.note;
-    const groups = req.body.gropus;
+    const groups = req.body.groups;
     let image;
     if (!req.body.file) {
         image = "";
@@ -45,7 +45,7 @@ router.post("/", resourceValidator, checkValidationResult, (req, res) => {
         groups: groups
     });
     resource.save()
-        .then((result) => {
+        .then(() => {
             res.status(200).json({ message: "The resource have been saved successfully" });
         })
         .catch((err) => {
@@ -54,10 +54,10 @@ router.post("/", resourceValidator, checkValidationResult, (req, res) => {
 });
 
 //delete resource
-router.delete("/:id", (req, res) => {
+router.delete("/:id", authMiddleware, (req, res) => {
     const id = req.params.id.toString().trim();
     Resource.findByIdAndDelete(id)
-        .then((result) => {
+        .then(() => {
             console.log("success");
         })
         .catch((err) => {

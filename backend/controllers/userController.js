@@ -109,9 +109,21 @@ const getUsers = asyncHandler(async (req, res) => {
         })
 });
 
+const getLoggedIn = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    res.status(200).json({
+        id: user._id,
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+        groups: user.groups,
+        slovenian: user.slovenian,
+    })
+});
+
 const signOutUser = (req, res) => {
     res.clearCookie("auth_token");
     res.json({ sucess: true, message: "User signed out successfully" })
 }
 
-module.exports = { createUser, authUser, updateUser, signOutUser, getUsers, validateToken };
+module.exports = { createUser, authUser, updateUser, signOutUser, getUsers, validateToken, getLoggedIn };

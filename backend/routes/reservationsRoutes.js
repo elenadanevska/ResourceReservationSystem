@@ -6,7 +6,7 @@ const User = require("../models/user");
 const { authMiddleware } = require("../middlewares/authMiddleware");
 
 //get all reservations 
-router.get("/", (req, res) => {
+router.get("/", authMiddleware, (req, res) => {
     Reservation.find().sort({ date: -1, time: -1 })
         .then((result) => {
             res.send(result);
@@ -18,7 +18,7 @@ router.get("/", (req, res) => {
 
 //get all users's reservations
 
-router.get("/user/:userId", (req, res) => {
+router.get("/user/:userId", authMiddleware, (req, res) => {
     const userId = req.params.userId;
     User.findById(userId).then((current_user) => {
         Reservation.find({ user: current_user }).sort({ date: -1, time: -1 })
@@ -32,11 +32,10 @@ router.get("/user/:userId", (req, res) => {
 });
 
 //get a reservation by id
-router.get("/:id", (req, res) => {
+router.get("/:id", authMiddleware, (req, res) => {
     const id = req.params.id;
-    /*if date*/
     const date = new Date(req.query.date);
-    date.setHours(1, 0, 0, 0);
+    date.setHours(0, 0, 0, 0);
     Resource.findById(id).then((found_resource) => {
         Reservation.find({ 'resource': found_resource, 'date': date })
             .then((result) => {
@@ -51,10 +50,10 @@ router.get("/:id", (req, res) => {
 });
 
 //new reservation,given resource id and user
-router.post("/:id", (req, res) => {
+router.post("/:id", authMiddleware, (req, res) => {
     const resourceId = req.params.id;
-    const date = new Date(req.body.params.date);
-    date.setHours(1, 0, 0, 0);
+    let exactDate = req.body.params.date.toString().substring(0, 10) + "Z"
+    const date = new Date(exactDate);
     const userId = req.body.params.userId;
     User.findById(userId).then((current_user) => {
         Resource.findById(resourceId).then((found_resource) => {
@@ -66,7 +65,7 @@ router.post("/:id", (req, res) => {
                     resource: found_resource,
                 });
                 reservation.save()
-                    .then((reservation_resullt) => {
+                    .then(() => {
                         console.log("Success");
                     })
                     .catch((reservation_err) => {
@@ -81,7 +80,7 @@ router.post("/:id", (req, res) => {
 });
 
 //delete reservation with specific id
-router.delete("/:id", (req, res) => {
+router.delete("/:id", authMiddleware, (req, res) => {
     const id = req.params.id;
     Reservation.findByIdAndDelete(id)
         .then((result) => {

@@ -4,32 +4,30 @@ import logo from '../assets/images/unilj.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faList, faHistory, faQuestionCircle, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import slo from "../translations/slo.json";
-import en from "../translations/en.json";
+import { translate } from '../helpers/Helpers';
+
 
 const Sidebar = props => {
     let slovenian = JSON.parse(localStorage.getItem("user")).slovenian;
-    let translationFile = slovenian ? slo : en
 
     let sidebar_items = [
         {
-            "display_name": translationFile.menu.reservations,
+            "display_name": translate("menu.reservations", slovenian),
             "route": "/user/reservations",
             "icon": faList
         },
         {
-            "display_name": translationFile.menu.resources,
+            "display_name": translate("menu.resources", slovenian),
             "route": "/user/resources",
             "icon": faPenToSquare
         },
         {
-            "display_name": translationFile.menu.history,
+            "display_name": translate("menu.history", slovenian),
             "route": "/user/history",
-
             "icon": faHistory
         },
         {
-            "display_name": translationFile.menu.help,
+            "display_name": translate("menu.help", slovenian),
             "route": "/user/help",
             "icon": faQuestionCircle
         },

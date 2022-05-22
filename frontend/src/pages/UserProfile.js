@@ -15,7 +15,7 @@ const UserProfile = () => {
 
     function changeLanguage(e) {
         let changeUser = false;
-        if (e.value == "slovenian") {
+        if (e.value === "slovenian") {
             if (!slovenian) {
                 changeUser = true;
                 setSlovenian(true);

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import ResourceCard from "../components/ResourceCard";
 import Select from "react-select";
 import Axios from "axios";
-import { translate } from '../helpers/Helpers';
+import { translate, getConfig } from '../helpers/Helpers';
 
 
 class ChooseResource extends Component {
@@ -21,13 +21,7 @@ class ChooseResource extends Component {
 
     componentDidMount() {
         try {
-            const config = {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${this.state.user.token}`
-                }
-            }
-            Axios.get("http://localhost:3001/resources", config).then((response) => {
+            Axios.get("http://localhost:3001/resources", getConfig(this.state.user)).then((response) => {
                 this.setState({ resources: response.data });
                 if (this.state.user.groups.length > 1) {
                     let resourceOption = [{ value: "", label: "Select All" }];
@@ -82,9 +76,8 @@ class ChooseResource extends Component {
                             if (value.name.toLowerCase().includes(this.state.searchString)) {
                                 if (this.state.selectedGroup === "" || value.groups.includes(this.state.selectedGroup)) {
                                     return (
-                                        <div className="col-md-3 mb-3" key={value.name}>
-                                            <ResourceCard note={value.note} description={value.describtion} image={value.image} id={value._id} />
-                                            <h2 className="text-center">{value.name}</h2>
+                                        <div className="col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-3" key={value.name}>
+                                            <ResourceCard name={value.name} note={value.note} description={value.describtion} image={value.image} id={value._id} />
                                         </div>);
                                 }
                             }

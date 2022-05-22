@@ -369,6 +369,28 @@ input {
     margin-top: 8%
 }
 
+/*ADMIN*/
+
+.adminSignOutButton {
+    position: absolute;
+    cursor: pointer;
+    bottom: 40px;
+    background-color: #464e53;
+    color: #eff3f6;
+}
+
+.adminTextArea {
+    resize: none;
+}
+
+.copyIcon {
+    top: -30px;
+    left: 180px;
+    position: relative;
+    color: #464e53;
+    cursor: pointer;
+}
+
 @media only screen and (max-width: 1025px) {
     .sidebar {
         display: none;
@@ -402,7 +424,6 @@ input {
     .nameSurname {
         display: block;
     }
-
 }
 
 @media only screen and (max-width: 760px) {

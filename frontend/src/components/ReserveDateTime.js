@@ -4,7 +4,7 @@ import Axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useParams } from 'react-router-dom';
-import { translate, getDateTimeString, getPrevNextDay } from '../helpers/Helpers';
+import { translate, getDateTimeString, getPrevNextDay, getConfig } from '../helpers/Helpers';
 
 
 const ReserveDayTime = props => {
@@ -25,24 +25,17 @@ const ReserveDayTime = props => {
     let dayOfWeek = bookingDate.getDay()
 
     useEffect(() => {
-        const config = {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${current_user.token}`
-            }
-        }
         Axios.get(`http://localhost:3001/reservations/${id}`, {
             params: {
                 date: bookingDate,
             }
-        }, config).then((response) => {
+        }, getConfig(current_user)).then((response) => {
             setOwnedReserved(response.data)
         }).catch(errors => {
             console.error(errors);
         });
 
-        Axios.get(`http://localhost:3001/resources/${id}`, config).then((response) => {
-            console.log(response.data["name"]);
+        Axios.get(`http://localhost:3001/resources/${id}`, getConfig(current_user)).then((response) => {
             setResourceName(response.data["name"])
         }).catch(errors => {
             console.error(errors);
@@ -71,7 +64,7 @@ const ReserveDayTime = props => {
             params: {
                 date: e,
             }
-        }).then((response) => {
+        }, getConfig(current_user)).then((response) => {
             setOwnedReserved(response.data)
         });
     };
@@ -89,7 +82,6 @@ const ReserveDayTime = props => {
     }
 
     const handleSubmit = e => {
-        console.log(current_user);
         if (current_user) {
             Axios.post(`http://localhost:3001/reservations/${id}`, {
                 params: {
@@ -97,7 +89,7 @@ const ReserveDayTime = props => {
                     selectedTimeSlot: reserve,
                     userId: current_user._id
                 }
-            }).then((res) => {
+            }, getConfig(current_user)).then(() => {
                 console.log("submitted");
             });
         }

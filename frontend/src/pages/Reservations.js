@@ -3,7 +3,7 @@ import DeleteButton from '../components/buttons/DeleteButton';
 import Table from "react-bootstrap/Table";
 import ShowButton from "../components/buttons/ShowButton";
 import Axios from "axios";
-import { translate, cmp, cutDate } from '../helpers/Helpers';
+import { translate, cmp, cutDate, getConfig } from '../helpers/Helpers';
 
 
 const Reservations = () => {
@@ -18,12 +18,7 @@ const Reservations = () => {
     let slovenian = user.slovenian;
 
     useEffect(() => {
-        const config = {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${user.token}`
-            }
-        }
+        const config = getConfig(user);
         Axios.get(`http://localhost:3001/reservations/user/${user._id}`, config).then((response) => {
             let data = response.data;
             setReservations(data);
@@ -68,7 +63,6 @@ const Reservations = () => {
                 const reservationDate = cutDate(value.date);
                 const resourceName = resources[value.resource];
                 const reservationTime = value.time;
-                /* if (new Date(reservationDate + ' ' + reservationTime.split(" ")[0]) >= new Date()) {*/
                 if ((resourceName !== undefined && resourceName.toLowerCase().includes(searchString)) ||
                     reservationDate.includes(searchString) || reservationTime.includes(searchString)) {
                     notFound = false;
@@ -80,7 +74,7 @@ const Reservations = () => {
                             <td>{reservationTime}</td>
                             <td>
                                 <ShowButton name={resourceName} date={reservationDate} time={value.time} place="R1-FRI" />
-                                <DeleteButton id={value._id} name={resourceName} date={reservationDate} time={value.time} setRes={setReservations} />
+                                <DeleteButton user={user} id={value._id} name={resourceName} date={reservationDate} time={value.time} setRes={setReservations} />
                             </td>
                         </tr>
                     </tbody>

@@ -16,19 +16,19 @@ export default function Topnav() {
     const [name, setName] = useState("");
     const [surname, setSurname] = useState("");
     const navigate = useNavigate();
-    let slovenian =
+    let slovenian = ""
 
-        useEffect(() => {
-            const user = JSON.parse(localStorage.getItem("user"));
-            if (user) {
-                console.log(user);
-                slovenian = user.slovenian;
-                setName(user.name);
-                setSurname(user.surname);
-            } else {
-                navigate("/");
-            }
-        }, []);
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (user) {
+            console.log(user);
+            slovenian = user.slovenian;
+            setName(user.name);
+            setSurname(user.surname);
+        } else {
+            navigate("/");
+        }
+    }, []);
 
     async function handleLogout() {
         try {

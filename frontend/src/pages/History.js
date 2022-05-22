@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import Axios from "axios";
 import Table from "react-bootstrap/Table";
-import { translate, cmp, cutDate } from '../helpers/Helpers';
+import { translate, cmp, cutDate, getConfig } from '../helpers/Helpers';
 
 const History = () => {
     const [fromDate, setFromDate] = useState(new Date());
@@ -17,17 +17,11 @@ const History = () => {
     let slovenian = current_user.slovenian;
 
     useEffect(() => {
-        const config = {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${current_user.token}`
-            }
-        }
-        Axios.get(`http://localhost:3001/reservations/user/${current_user._id}`, config).then((response) => {
+        Axios.get(`http://localhost:3001/reservations/user/${current_user._id}`, getConfig(current_user)).then((response) => {
             let data = response.data;
             setReservations(response.data);
             data.forEach(res => {
-                Axios.get(`http://localhost:3001/resources/${res.resource}`, config).then((r) => {
+                Axios.get(`http://localhost:3001/resources/${res.resource}`, getConfig(current_user)).then((r) => {
                     let newResource = {};
                     newResource[r.data._id] = r.data.name;
                     setResources(resources => ({ ...resources, ...newResource }))

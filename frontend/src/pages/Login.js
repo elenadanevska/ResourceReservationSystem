@@ -44,11 +44,16 @@ export default function Login(props) {
                     email: res.data.email,
                     groups: res.data.groups,
                     slovenian: res.data.slovenian,
-                    token: res.data.token
+                    token: res.data.token,
+                    isAdmin: res.data.isAdmin
                 }
                 localStorage.setItem("user", JSON.stringify(u))
-                props.login({ isLogin: true, token: "Elena" })
-                navigate("/user/reservations");
+                props.login({ isLogin: true, token: u.token, isAdmin: u.isAdmin })
+                if (!u.isAdmin) {
+                    navigate("/user/reservations");
+                } else {
+                    navigate("/adminpage");
+                }
                 window.location.reload();
             });
         } catch (error) {

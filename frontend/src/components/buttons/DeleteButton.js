@@ -5,6 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import Axios from "axios";
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getConfig } from '../../helpers/Helpers';
 
 function DeleteButton(props) {
 
@@ -14,7 +15,7 @@ function DeleteButton(props) {
 
 
     const deleteReservation = (id) => {
-        Axios.delete(`http://localhost:3001/reservations/${id}`).then((response) => {
+        Axios.delete(`http://localhost:3001/reservations/${id}`, getConfig(props.user)).then((response) => {
             if (response.status === 200) {
                 Axios.get("http://localhost:3001/reservations")
                     .then((response) => {

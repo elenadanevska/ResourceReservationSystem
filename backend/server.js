@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const app = express();
 const resourcesRoutes = require("./routes/resourcesRoutes");
 const usersRoutes = require("./routes/usersRoutes");
+const adminsRoutes = require("./routes/adminRoutes");
 const reservationsRoutes = require("./routes/reservationsRoutes");
 require("dotenv").config({ path: path.join(__dirname, '../.env') });
 
@@ -33,3 +34,6 @@ app.use("/reservations", reservationsRoutes);
 
 //users routes
 app.use("/users", usersRoutes);
+
+//admin routes
+app.use("/admins", adminsRoutes);

@@ -5,7 +5,7 @@ const { checkValidationResult, resourceValidator } = require("../validators/reso
 const { authMiddleware } = require("../middlewares/authMiddleware");
 
 //get all resources
-router.get("/", authMiddleware, (req, res) => {
+router.get("/", authMiddleware(), (req, res) => {
     Resource.find()
         .then((result) => {
             res.send(result);
@@ -16,7 +16,7 @@ router.get("/", authMiddleware, (req, res) => {
 });
 
 //get resource by id
-router.get("/:id", authMiddleware, (req, res) => {
+router.get("/:id", authMiddleware(), (req, res) => {
     const id = req.params.id.toString().trim();
     Resource.findById(id)
         .then((result) => {
@@ -28,7 +28,7 @@ router.get("/:id", authMiddleware, (req, res) => {
 });
 
 //insert new resource
-router.post("/", authMiddleware, resourceValidator, checkValidationResult, (req, res) => {
+router.post("/", authMiddleware(true), resourceValidator, checkValidationResult, (req, res) => {
     const resourceName = req.body.name;
     const resourceDescription = req.body.description;
     const resourceNote = req.body.note;
@@ -53,8 +53,19 @@ router.post("/", authMiddleware, resourceValidator, checkValidationResult, (req,
         })
 });
 
+//update resource
+router.put("/:id", authMiddleware(true), (req, res) => {
+    const id = req.params.id.toString().trim();
+    Resource.findByIdAndUpdate(id, { $set: req.body }).then((result) => {
+        res.status(201).json({ sucess: true, message: "The resource has been updated sucessfully", resource: result })
+    }).catch((err) => {
+        res.status(500).json({ sucess: false, error: "Error occured. The resource can not be updated" });
+        console.log(err);
+    })
+})
+
 //delete resource
-router.delete("/:id", authMiddleware, (req, res) => {
+router.delete("/:id", authMiddleware(true), (req, res) => {
     const id = req.params.id.toString().trim();
     Resource.findByIdAndDelete(id)
         .then(() => {

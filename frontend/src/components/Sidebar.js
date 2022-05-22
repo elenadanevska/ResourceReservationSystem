@@ -38,7 +38,7 @@ const Sidebar = props => {
             return <div className="row smallScreenMenu">
                 {
                     sidebar_items.map((item, index) => (
-                        <Link to={item.route} key={index} className="col">
+                        <Link to={item.route} key={index} className="col col-md-3">
                             <div className='navbarItem'>
                                 <FontAwesomeIcon icon={item.icon} />
                                 <span className='menuText'>{item.display_name}</span>

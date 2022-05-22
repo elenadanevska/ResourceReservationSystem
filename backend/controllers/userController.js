@@ -49,6 +49,7 @@ const createUser = asyncHandler((async (req, res) => {
                 email: newUser.email,
                 groups: newUser.groups,
                 slovenian: newUser.slovenian,
+                isAdmin: newUser.isAdmin
             });
         } else {
             res.status(400).json({ sucess: false, error: "Unknown error occured. User can not be created" });
@@ -61,7 +62,7 @@ const createUser = asyncHandler((async (req, res) => {
 
 const updateUser = asyncHandler((async (req, res) => {
     try {
-        await User.findByIdAndUpdate(req.params.id, { $set: req.body })
+        await User.findByIdAndUpdate(req.params.id, { $set: req.body });
         res.status(201).json({ sucess: true, message: "The user has been updated sucessfully" })
     } catch (error) {
         res.status(500).json({ sucess: false, error: "Error occured. The user can not be updated" });
@@ -78,7 +79,6 @@ const authUser = asyncHandler(async (req, res) => {
         } else {
             if (await user.matchPassword(password)) {
                 const token = generateToken(user._id);
-                //token = user.token;
                 res.cookie("auth_token", token, { httpOnly: true });
                 res.status(201).json({
                     _id: user._id,
@@ -88,6 +88,7 @@ const authUser = asyncHandler(async (req, res) => {
                     groups: user.groups,
                     slovenian: user.slovenian,
                     token: token,
+                    isAdmin: user.isAdmin
                 });
             } else {
                 res.status(401).json({ sucess: false, error: "Invalid email or password" });
@@ -98,7 +99,7 @@ const authUser = asyncHandler(async (req, res) => {
     }
 });
 
-//get all resources
+// get all users
 const getUsers = asyncHandler(async (req, res) => {
     User.find()
         .then((result) => {
@@ -109,16 +110,18 @@ const getUsers = asyncHandler(async (req, res) => {
         })
 });
 
-const getLoggedIn = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
-    res.status(200).json({
-        id: user._id,
+const getUserById = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id);
+    res.send({
+        _id: user._id,
         name: user.name,
         surname: user.surname,
         email: user.email,
         groups: user.groups,
         slovenian: user.slovenian,
-    })
+        isAdmin: user.isAdmin,
+        apiKey: user.apiKey      //.toString(cryptoJS.enc.Utf8)
+    });
 });
 
 const signOutUser = (req, res) => {
@@ -126,4 +129,4 @@ const signOutUser = (req, res) => {
     res.json({ sucess: true, message: "User signed out successfully" })
 }
 
-module.exports = { createUser, authUser, updateUser, signOutUser, getUsers, validateToken, getLoggedIn };
+module.exports = { createUser, authUser, updateUser, signOutUser, getUsers, validateToken, getUserById };

@@ -7,6 +7,7 @@ import MakeReservation from './pages/ChooseResource';
 import History from './pages/History';
 import HelpUser from './pages/HelpUser';
 import UserProfile from './pages/UserProfile';
+import AdminPage from './pages/AdminPage';
 import ReserveDateTime from './components/ReserveDateTime';
 import Login from "./pages/Login";
 import Axios from "axios";
@@ -19,6 +20,7 @@ export default class App extends Component {
         this.state = {
             apiResponse: "",
             isLogin: false,
+            isAdmin: false,
             token: "",
             validToken: false
         };
@@ -26,14 +28,15 @@ export default class App extends Component {
     }
 
 
-    login({ token, isLogin }) {
-        this.setState({ token, isLogin })
+    login({ token, isLogin, isAdmin }) {
+        this.setState({ token, isLogin, isAdmin })
     }
 
     checkLoggedIn() {
         const user = JSON.parse(localStorage.getItem("user"));
         if (user) {
-            this.setState({ isLogin: true, user: user, token: user.token });
+            console.log(user);
+            this.setState({ isLogin: true, user: user, token: user.token, isAdmin: user.isAdmin });
             Axios.post('http://localhost:3001/users/tokenIsValid', null, { headers: { "x-auth-token": user.token } }).then((response) => {
                 this.setState({ validToken: response.data });
             });
@@ -48,27 +51,39 @@ export default class App extends Component {
 
     render() {
         if (this.state.isLogin === true && this.state.validToken) {
-            return (
-                <BrowserRouter>
-                    <div className="layout">
-                        <Sidebar classes="sidebar" />
-                        <div className="content">
-                            <TopNav />
-                            <div className="content-main">
-                                <Routes>
-                                    <Route path='/user/reservations' exact element={<Reservations />} />
-                                    <Route path='/user/resources' element={<MakeReservation />} />
-                                    <Route path='/user/history' exact element={<History />} />
-                                    <Route path='/user/help' element={<HelpUser />} />
-                                    <Route path='/user/profile' exact element={<UserProfile />} />
-                                    <Route path='/user/choose-time/:id' element={<ReserveDateTime />} />
-                                    <Route path="/login" element={<Navigate replace to="/user/reservations" />} />
-                                </Routes>
+            if (!this.state.isAdmin) {
+                console.log("here1");
+                return (
+                    <BrowserRouter>
+                        <div className="layout">
+                            <Sidebar classes="sidebar" />
+                            <div className="content">
+                                <TopNav />
+                                <div className="content-main">
+                                    <Routes>
+                                        <Route path='/user/reservations' exact element={<Reservations />} />
+                                        <Route path='/user/resources' element={<MakeReservation />} />
+                                        <Route path='/user/history' exact element={<History />} />
+                                        <Route path='/user/help' element={<HelpUser />} />
+                                        <Route path='/user/profile' exact element={<UserProfile />} />
+                                        <Route path='/user/choose-time/:id' element={<ReserveDateTime />} />
+                                        <Route path="/login" element={<Navigate replace to="/user/reservations" />} />
+                                    </Routes>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </BrowserRouter>
-            );
+                    </BrowserRouter>
+                );
+            } else {
+                return (
+                    <BrowserRouter>
+                        <Routes>
+                            <Route path="/" element={<Navigate replace to="/adminpage" />} />
+                            <Route path="/adminpage" element={<AdminPage />} />
+                        </Routes>
+                    </BrowserRouter>
+                );
+            }
         } else {
             return (
                 <BrowserRouter>

@@ -28,3 +28,13 @@ export function getPrevNextDay(up, date) {
     else prevNextDay.setDate(date.getDate() - 1);
     return new Date(prevNextDay);
 }
+
+export function getConfig(user) {
+    const config = {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`
+        }
+    }
+    return config
+}

@@ -14,14 +14,13 @@ const History = () => {
     const [sortResourceUp, setSortResourceUp] = useState(true);
     const current_user = JSON.parse(localStorage.getItem("user"));
     let skipped = 0;
-    let slovenian = current_user.slovenian;
 
     useEffect(() => {
-        Axios.get(`http://localhost:3001/reservations/user/${current_user._id}`, getConfig(current_user)).then((response) => {
+        Axios.get(`http://localhost:3001/reservations/user/${current_user._id}`, getConfig(current_user.token)).then((response) => {
             let data = response.data;
             setReservations(response.data);
             data.forEach(res => {
-                Axios.get(`http://localhost:3001/resources/${res.resource}`, getConfig(current_user)).then((r) => {
+                Axios.get(`http://localhost:3001/resources/${res.resource}`, getConfig(current_user.token)).then((r) => {
                     let newResource = {};
                     newResource[r.data._id] = r.data.name;
                     setResources(resources => ({ ...resources, ...newResource }))
@@ -38,19 +37,19 @@ const History = () => {
             <thead className="bg-info">
                 <tr>
                     <th scope="col"></th>
-                    <th scope="col">{translate("reservations_page.resource_name", slovenian)}
+                    <th scope="col">{translate("reservations_page.resource_name")}
                         <span className='arrows'>
                             <button className="up-arrow" onClick={() => sortResource()}></button>
                             <button className="down-arrow" onClick={() => sortResource()}></button>
                         </span>
                     </th>
-                    <th scope="col">{translate("reservations_page.date", slovenian)}
+                    <th scope="col">{translate("reservations_page.date")}
                         <span className='arrows'>
                             <button className="up-arrow" onClick={() => sortDate()}></button>
                             <button className="down-arrow" onClick={() => sortDate()}></button>
                         </span>
                     </th>
-                    <th scope="col">{translate("reservations_page.time", slovenian)}</th>
+                    <th scope="col">{translate("reservations_page.time")}</th>
                 </tr>
             </thead>
         );
@@ -61,7 +60,7 @@ const History = () => {
             <div className="row containerr">
                 <div className="col text-center"></div>
                 <div className="col text-center">
-                    {translate("history_page.from_date", slovenian)}
+                    {translate("history_page.from_date")}
                     <DatePicker
                         selected={fromDate}
                         onSelect={onFromDateChange}
@@ -71,7 +70,7 @@ const History = () => {
                     />
                 </div>
                 <div className="col text-center">
-                    {translate("history_page.to_date", slovenian)}
+                    {translate("history_page.to_date")}
                     <DatePicker
                         selected={toDate}
                         onSelect={onToDateChange}
@@ -132,7 +131,7 @@ const History = () => {
             }
         })
         if (notFound) {
-            return <div>{translate("reservations_page.not_found", slovenian)}</div>
+            return <div>{translate("reservations_page.not_found")}</div>
         } else {
             return <Table striped bordered hover className="bg-light">
                 {TableHeader()}
@@ -144,12 +143,12 @@ const History = () => {
     return (
         <div>
             <h2 className="page-header">
-                {translate("titles.history", slovenian)}
+                {translate("titles.history")}
             </h2>
             <DatePickers />
             <div className="text-center mt-5">
                 <button type="button" onClick={handleShow} className="btn btn-primary">
-                    {translate("history_page.show_button", slovenian)}
+                    {translate("history_page.show_button")}
                 </button>
             </div>
             <div className={`mt-5 ${showHistory ? "" : "d-none"}`}>

@@ -35,8 +35,7 @@ export default class App extends Component {
     checkLoggedIn() {
         const user = JSON.parse(localStorage.getItem("user"));
         if (user) {
-            console.log(user);
-            this.setState({ isLogin: true, user: user, token: user.token, isAdmin: user.isAdmin });
+            this.setState({ isLogin: true, token: user.token, isAdmin: user.isAdmin });
             Axios.post('http://localhost:3001/users/tokenIsValid', null, { headers: { "x-auth-token": user.token } }).then((response) => {
                 this.setState({ validToken: response.data });
             });
@@ -52,7 +51,6 @@ export default class App extends Component {
     render() {
         if (this.state.isLogin === true && this.state.validToken) {
             if (!this.state.isAdmin) {
-                console.log("here1");
                 return (
                     <BrowserRouter>
                         <div className="layout">

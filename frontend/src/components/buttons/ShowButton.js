@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { translate } from '../../helpers/Helpers';
 
 function ShowButton(props) {
 
@@ -26,15 +27,14 @@ function ShowButton(props) {
                 </Modal.Header>
                 <Modal.Body className="model_view_res">
                     <div className="container">
-                        <p><b>Resource name:</b> {props.name}</p>
-                        <p><b>Place:</b> {props.place}</p>
-                        <p><b>Date:</b> {props.date}</p>
-                        <p><b>Time:</b> {props.time}</p>
+                        <p><b>{translate("reservations_page.resource_name")}:</b> {props.name}</p>
+                        <p><b>{translate("reservations_page.date")}:</b> {props.date}</p>
+                        <p><b>{translate("reservations_page.time")}:</b> {props.time}</p>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
-                        Close
+                        {translate("resources_page.button.close")}
                     </Button>
                 </Modal.Footer>
             </Modal>

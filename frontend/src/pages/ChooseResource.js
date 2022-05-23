@@ -16,15 +16,14 @@ class ChooseResource extends Component {
             searchString: "",
             user: JSON.parse(localStorage.getItem("user")),
         }
-        this.slovenian = this.state.user.slovenian
     }
 
     componentDidMount() {
         try {
-            Axios.get("http://localhost:3001/resources", getConfig(this.state.user)).then((response) => {
+            Axios.get("http://localhost:3001/resources", getConfig(this.state.user.token)).then((response) => {
                 this.setState({ resources: response.data });
                 if (this.state.user.groups.length > 1) {
-                    let resourceOption = [{ value: "", label: "Select All" }];
+                    let resourceOption = [{ value: "", label: translate("resources_page.select_all") }];
                     let uniqe = [];
                     response.data.map(resource => resource.groups.forEach(element => {
                         if (!uniqe.includes(element)) {
@@ -46,11 +45,11 @@ class ChooseResource extends Component {
         return (
             <div>
                 <h2 className="page-header">
-                    {translate("titles.resources", this.slovenian)}
+                    {translate("titles.resources")}
                 </h2>
                 <div className="mb-5" style={{ marginLeft: "2%" }}>
                     <div className="customSearch mb-2" style={{ width: "40%" }}>
-                        <input type="text" placeholder={translate("resources_page.search", this.slovenian)} onChange={(e) => {
+                        <input type="text" placeholder={translate("resources_page.search")} onChange={(e) => {
                             this.setState({
                                 searchString: e.target.value.toLowerCase(),
                             });
@@ -61,7 +60,7 @@ class ChooseResource extends Component {
                             className="selectType"
                             placeholder="Select Type"
                             options={Array.from(this.state.resouceGroups)}
-                            defaultValue={{ value: '', label: 'Select resource group' }}
+                            defaultValue={{ value: '', label: translate("resources_page.select_group") }}
                             onChange={(e) => {
                                 this.setState({
                                     selectedGroup: e.value,

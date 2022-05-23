@@ -13,22 +13,8 @@ import Axios from "axios";
 
 export default function Topnav() {
 
-    const [name, setName] = useState("");
-    const [surname, setSurname] = useState("");
     const navigate = useNavigate();
-    let slovenian = ""
-
-    useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (user) {
-            console.log(user);
-            slovenian = user.slovenian;
-            setName(user.name);
-            setSurname(user.surname);
-        } else {
-            navigate("/");
-        }
-    }, []);
+    let user = JSON.parse(localStorage.getItem("user"));
 
     async function handleLogout() {
         try {
@@ -56,14 +42,14 @@ export default function Topnav() {
                                     <img src={user_image} alt="" />
                                 </div>
                                 <div className="topnavUsername">
-                                    {name + " " + surname}
+                                    {user.name + " " + user.surname}
                                 </div>
                             </div>
                         </Link>
                         <ul className="dropdown-menu dropdown-menu-light text-small shadow" aria-labelledby="dropdown">
-                            <Link className="dropdown-item" to="/user/profile" ><FontAwesomeIcon icon={faUserCircle} />    {translate("dropdown.profile", slovenian)}</Link>
+                            <Link className="dropdown-item" to="/user/profile" ><FontAwesomeIcon icon={faUserCircle} />    {translate("dropdown.profile")}</Link>
                             <hr className="dropdown-divider" />
-                            <button className="dropdown-item" onClick={handleLogout}><FontAwesomeIcon icon={faSignOut} />    {translate("dropdown.signout", slovenian)}</button>
+                            <button className="dropdown-item" onClick={handleLogout}><FontAwesomeIcon icon={faSignOut} />    {translate("dropdown.signout")}</button>
                         </ul>
                     </li>
                 </div>

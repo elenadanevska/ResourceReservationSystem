@@ -19,7 +19,10 @@
         "time": "Time",
         "actions": "Actions",
         "search": "Search reservations...",
-        "not_found": "No results found"
+        "not_found": "No results found",
+        "confirm_delete": "Are you sure you want to cancel this reservation?",
+        "confirm_yes": "Yes",
+        "confirm_no": "No"
     },
     "resources_page": {
         "search": "Search by name",
@@ -33,7 +36,10 @@
         },
         "pick_date": "Pick a date",
         "tommorow": "Tommorow",
-        "yesterday": "Yesterday"
+        "yesterday": "Yesterday",
+        "select_group": "Select resource group",
+        "select_all": "Select all",
+        "note": "Note"
     },
     "history_page": {
         "from_date": "From Date",
@@ -56,7 +62,9 @@
         "groups": "Groups",
         "email": "Email Address",
         "role": "Role",
-        "student": "Student"
+        "student": "Student",
+        "slovenian": "Slovenian",
+        "english": "English"
     },
     "dropdown": {
         "profile": "Profile",

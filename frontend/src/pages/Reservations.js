@@ -15,10 +15,9 @@ const Reservations = () => {
     const [sortResourceUp, setSortResourceUp] = useState(true);
     const user = JSON.parse(localStorage.getItem("user"));
     let skipped = 0;
-    let slovenian = user.slovenian;
 
     useEffect(() => {
-        const config = getConfig(user);
+        const config = getConfig(user.token);
         Axios.get(`http://localhost:3001/reservations/user/${user._id}`, config).then((response) => {
             let data = response.data;
             setReservations(data);
@@ -37,20 +36,20 @@ const Reservations = () => {
             <thead className="bg-info">
                 <tr>
                     <th scope="col"></th>
-                    <th scope="col">{translate("reservations_page.resource_name", slovenian)}
+                    <th scope="col">{translate("reservations_page.resource_name")}
                         <span className='arrows'>
                             <button className="up-arrow" onClick={() => sortResource()}></button>
                             <button className="down-arrow" onClick={() => sortResource()}></button>
                         </span>
                     </th>
-                    <th scope="col">{translate("reservations_page.date", slovenian)}
+                    <th scope="col">{translate("reservations_page.date")}
                         <span className='arrows'>
                             <button className="up-arrow" onClick={() => sortDate()}></button>
                             <button className="down-arrow" onClick={() => sortDate()}></button>
                         </span>
                     </th>
-                    <th scope="col">{translate("reservations_page.time", slovenian)}</th>
-                    <th scope="col">{translate("reservations_page.actions", slovenian)}</th>
+                    <th scope="col">{translate("reservations_page.time")}</th>
+                    <th scope="col">{translate("reservations_page.actions")}</th>
                 </tr>
             </thead >
         );
@@ -73,7 +72,7 @@ const Reservations = () => {
                             <td>{reservationDate}</td>
                             <td>{reservationTime}</td>
                             <td>
-                                <ShowButton name={resourceName} date={reservationDate} time={value.time} place="R1-FRI" />
+                                <ShowButton name={resourceName} date={reservationDate} time={value.time} />
                                 <DeleteButton user={user} id={value._id} name={resourceName} date={reservationDate} time={value.time} setRes={setReservations} />
                             </td>
                         </tr>
@@ -84,7 +83,7 @@ const Reservations = () => {
             }
         });
         if (notFound) {
-            return <div>{translate("reservations_page.not_found", slovenian)}</div>
+            return <div>{translate("reservations_page.not_found")}</div>
         } else {
             return <Table striped bordered hover className="bg-light">
                 {TableHeader()}
@@ -109,11 +108,11 @@ const Reservations = () => {
     return (
         <div>
             <h2 className="page-header">
-                {translate("titles.reservations", slovenian)}
+                {translate("titles.reservations")}
             </h2>
             <div className="container">
                 <div className="customSearch mb-4" style={{ width: "40%" }}>
-                    <input type="text" placeholder={translate("reservations_page.search", slovenian)} onChange={(e) => {
+                    <input type="text" placeholder={translate("reservations_page.search")} onChange={(e) => {
                         SetSearchString(e.target.value.toLowerCase());
                     }} />
                 </div>

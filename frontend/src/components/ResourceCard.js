@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { Link } from 'react-router-dom';
 import projector from '../assets/images/projector.jpg';
+import { translate } from '../helpers/Helpers';
 
 function ResourceCard(props) {
 
@@ -11,7 +12,7 @@ function ResourceCard(props) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  let cardLink = <Link to={`/user/choose-time/${props.id}`} className="btn btn-primary actionButtonsCard">Reserve</Link>
+  let cardLink = <Link to={`/user/choose-time/${props.id}`} className="btn btn-primary actionButtonsCard">{translate("resources_page.button.reserve")}</Link>
 
 
   return (
@@ -40,14 +41,14 @@ function ResourceCard(props) {
             </div>
             <div className="container">
               <hr />
-              <strong>Note:</strong> {props.note}
+              <strong>{translate("resources_page.note")}:</strong> {props.note}
             </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
           {cardLink}
           <Button variant="secondary actionButtonsCard" onClick={handleClose}>
-            Close
+            {translate("resources_page.button.close")}
           </Button>
         </Modal.Footer>
       </Modal>

@@ -9,8 +9,8 @@ const UserProfile = () => {
     const [languageChanged, setLanguageChanged] = useState(false);
     const [slovenian, setSlovenian] = useState(current_user.slovenian);
     const languageOptions = [
-        { value: 'english', label: 'English' },
-        { value: 'slovenian', label: 'Slovenian' },
+        { value: 'english', label: translate("profile_page.english") },
+        { value: 'slovenian', label: translate("profile_page.slovenian") },
     ]
 
     function changeLanguage(e) {
@@ -46,7 +46,7 @@ const UserProfile = () => {
     return (
         <div>
             <h2 className="page-header">
-                {translate("titles.profile", slovenian)}
+                {translate("titles.profile")}
             </h2>
             <div className="container rounded bg-white mt-5 mb-5">
                 <div className="row">
@@ -60,26 +60,26 @@ const UserProfile = () => {
                         <div className="profileText">
                             <div className="p-3 py-5">
                                 <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h4 className="text-right">{translate("profile_page.infoTitle", slovenian)}</h4>
+                                    <h4 className="text-right">{translate("profile_page.infoTitle")}</h4>
                                 </div>
                                 <div className="row mt-2 nameSurname">
-                                    <div className="col"><label className="labels proLabels">{translate("profile_page.nameSurname", slovenian)}:&emsp;</label><br />
+                                    <div className="col"><label className="labels proLabels">{translate("profile_page.nameSurname")}:&emsp;</label><br />
                                         {current_user.name} {current_user.surname}
                                     </div>
                                 </div>
                                 <div className="row mt-2">
-                                    <div className="col"><label className="labels proLabels">{translate("profile_page.role", slovenian)}:&emsp;</label><br />
-                                        {translate("profile_page.student", slovenian)}
+                                    <div className="col"><label className="labels proLabels">{translate("profile_page.role")}:&emsp;</label><br />
+                                        {translate("profile_page.student")}
                                     </div>
                                 </div>
                                 <div className="row mt-2">
-                                    <div className="col"><label className="labels proLabels">{translate("profile_page.email", slovenian)}:&emsp;</label>{current_user.email}</div>
+                                    <div className="col"><label className="labels proLabels">{translate("profile_page.email")}:&emsp;</label>{current_user.email}</div>
                                 </div>
                                 <div className="row mt-2">
-                                    <div className="col"><label className="labels proLabels">{translate("profile_page.language", slovenian)}:&emsp;</label>
+                                    <div className="col"><label className="labels proLabels">{translate("profile_page.language")}:&emsp;</label>
                                         <Select
                                             options={languageOptions}
-                                            defaultValue={slovenian ? { value: 'slovenian', label: 'Slovenian' } : { value: 'english', label: 'English' }}
+                                            defaultValue={slovenian ? { value: 'slovenian', label: translate("profile_page.slovenian") } : { value: 'english', label: translate("profile_page.english") }}
                                             onChange={(e) => {
                                                 changeLanguage(e);
                                             }}
@@ -87,7 +87,7 @@ const UserProfile = () => {
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between align-items-center mb-3 mt-4">
-                                    <h4 className="text-right">{translate("profile_page.groups", slovenian)}</h4>
+                                    <h4 className="text-right">{translate("profile_page.groups")}</h4>
                                 </div>
                                 <div className="row mt-2">
                                     <div className="col-6">

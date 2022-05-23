@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import Axios from "axios";
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getConfig } from '../../helpers/Helpers';
+import { getConfig, translate } from '../../helpers/Helpers';
 
 function DeleteButton(props) {
 
@@ -15,9 +15,10 @@ function DeleteButton(props) {
 
 
     const deleteReservation = (id) => {
-        Axios.delete(`http://localhost:3001/reservations/${id}`, getConfig(props.user)).then((response) => {
+        Axios.delete(`http://localhost:3001/reservations/${id}`, getConfig(props.user.token)).then((response) => {
+            console.log(response);
             if (response.status === 200) {
-                Axios.get("http://localhost:3001/reservations")
+                Axios.get("http://localhost:3001/reservations", getConfig(props.user.token))
                     .then((response) => {
                         props.setRes(response.data);
                     });
@@ -47,7 +48,8 @@ function DeleteButton(props) {
             >
                 <Modal.Header closeButton>
                     <Modal.Title>
-                        Are you sure you want to cancel this reservation?<br />
+                        {translate("reservations_page.confirm_delete")}
+                        <br />
                         <h5 className="mt-2 text-secondary">
                             {props.name} <br /> {props.date} {props.time}
                         </h5>
@@ -55,10 +57,10 @@ function DeleteButton(props) {
                 </Modal.Header>
                 <Modal.Footer>
                     <Button variant="success" onClick={handleDelete}>
-                        Yes
+                        {translate("reservations_page.confirm_yes")}
                     </Button>
                     <Button variant="secondary" onClick={handleClose}>
-                        No
+                        {translate("reservations_page.confirm_no")}
                     </Button>
                 </Modal.Footer >
             </Modal >

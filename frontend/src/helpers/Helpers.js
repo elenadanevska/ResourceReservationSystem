@@ -1,8 +1,10 @@
 import slo from "../translations/slo.json";
 import en from "../translations/en.json";
+import Axios from "axios";
 
-export function translate(jsonPath, slovenian) {
-    let translationFile = slovenian ? slo : en;
+export function translate(jsonPath) {
+    let user = JSON.parse(localStorage.getItem("user"));
+    let translationFile = user.slovenian ? slo : en;
     return eval("translationFile." + jsonPath)
 }
 
@@ -29,11 +31,11 @@ export function getPrevNextDay(up, date) {
     return new Date(prevNextDay);
 }
 
-export function getConfig(user) {
+export function getConfig(token) {
     const config = {
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`
+            Authorization: `Bearer ${token}`
         }
     }
     return config

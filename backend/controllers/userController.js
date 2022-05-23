@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
+var CryptoJS = require("crypto-js");
 
 const generateToken = (userId) => {
     return jwt.sign({ _id: userId }, process.env.JWT_SECRET, {
@@ -8,13 +9,16 @@ const generateToken = (userId) => {
     });
 }
 
+//check if given token is valid
 const validateToken = asyncHandler(async (req, res) => {
     try {
         const token = req.header("x-auth-token");
+        let bytes = CryptoJS.AES.decrypt(token, process.env.JWT_SECRET);
+        let decryptedToken = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
         if (!token) {
             return res.json(false);
         }
-        const verified = jwt.verify(token, process.env.JWT_SECRET);
+        const verified = jwt.verify(decryptedToken, process.env.JWT_SECRET);
         if (!verified) {
             return res.json(false);
         }
@@ -28,6 +32,7 @@ const validateToken = asyncHandler(async (req, res) => {
     }
 });
 
+//create a new user
 const createUser = asyncHandler((async (req, res) => {
     const { name, surname, email, password, isAdmin, groups, slovenian } = req.body;
     try {
@@ -60,6 +65,7 @@ const createUser = asyncHandler((async (req, res) => {
     }
 }));
 
+//update an existing user
 const updateUser = asyncHandler((async (req, res) => {
     try {
         await User.findByIdAndUpdate(req.params.id, { $set: req.body });
@@ -87,7 +93,7 @@ const authUser = asyncHandler(async (req, res) => {
                     email: user.email,
                     groups: user.groups,
                     slovenian: user.slovenian,
-                    token: token,
+                    token: CryptoJS.AES.encrypt(JSON.stringify(token), process.env.JWT_SECRET).toString(),
                     isAdmin: user.isAdmin
                 });
             } else {
@@ -110,6 +116,25 @@ const getUsers = asyncHandler(async (req, res) => {
         })
 });
 
+//get logged in user by token
+const getUserByToken = asyncHandler(async (req, res) => {
+    let bytes = CryptoJS.AES.decrypt(req.query.token, process.env.JWT_SECRET);
+    let token = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(verified._id);
+    res.send({
+        _id: user._id,
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+        groups: user.groups,
+        slovenian: user.slovenian,
+        isAdmin: user.isAdmin,
+        apiKey: user.apiKey
+    });
+});
+
+//getuser by id
 const getUserById = asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id);
     res.send({
@@ -120,13 +145,14 @@ const getUserById = asyncHandler(async (req, res) => {
         groups: user.groups,
         slovenian: user.slovenian,
         isAdmin: user.isAdmin,
-        apiKey: user.apiKey      //.toString(cryptoJS.enc.Utf8)
+        apiKey: user.apiKey
     });
 });
 
+//sign out user
 const signOutUser = (req, res) => {
     res.clearCookie("auth_token");
     res.json({ sucess: true, message: "User signed out successfully" })
 }
 
-module.exports = { createUser, authUser, updateUser, signOutUser, getUsers, validateToken, getUserById };
+module.exports = { createUser, authUser, updateUser, signOutUser, getUsers, validateToken, getUserByToken, getUserById };

@@ -16,7 +16,6 @@ const ReserveDayTime = props => {
     const [resourceName, setResourceName] = useState("")
     const current_user = JSON.parse(localStorage.getItem("user"));
     const { id } = useParams();
-    let slovenian = current_user.slovenian;
     let times = [
         "08:00 - 08:30", "08:30 - 09:00", "09:00 - 09:30", "09:30 - 10:00", "10:00 - 10:30",
         "10:30 - 11:00", "11:00 - 11:30", "11:30 - 12:00", "12:00 - 12:30", "12:30 - 13:00",
@@ -29,13 +28,13 @@ const ReserveDayTime = props => {
             params: {
                 date: bookingDate,
             }
-        }, getConfig(current_user)).then((response) => {
+        }, getConfig(current_user.token)).then((response) => {
             setOwnedReserved(response.data)
         }).catch(errors => {
             console.error(errors);
         });
 
-        Axios.get(`http://localhost:3001/resources/${id}`, getConfig(current_user)).then((response) => {
+        Axios.get(`http://localhost:3001/resources/${id}`, getConfig(current_user.token)).then((response) => {
             setResourceName(response.data["name"])
         }).catch(errors => {
             console.error(errors);
@@ -89,7 +88,7 @@ const ReserveDayTime = props => {
                     selectedTimeSlot: reserve,
                     userId: current_user._id
                 }
-            }, getConfig(current_user)).then(() => {
+            }, getConfig(current_user.token)).then(() => {
                 console.log("submitted");
             });
         }
@@ -107,7 +106,7 @@ const ReserveDayTime = props => {
 
     return (
         <div className="container mt-5">
-            <h3 className="page-header">{translate("titles.reserve", slovenian)}</h3>
+            <h3 className="page-header">{translate("titles.reserve")}</h3>
             <h5 className='mb-4 mt-2 text-center text-primary'>{resourceName.toUpperCase()}</h5>
             <div className="row">
                 <div className='mt-3 col'>
@@ -115,11 +114,11 @@ const ReserveDayTime = props => {
                         setBookingDate(getPrevNextDay(false, bookingDate))
                         setReserve([])
                     }}>{"<- "}
-                        {translate("resources_page.yesterday", slovenian)}
+                        {translate("resources_page.yesterday")}
                     </span>
                 </div>
                 <div className='mb-3 text-center col'>
-                    {translate("resources_page.pick_date", slovenian)}
+                    {translate("resources_page.pick_date")}
                     <DatePicker
                         selected={bookingDate}
                         onSelect={onDateChange}
@@ -135,7 +134,7 @@ const ReserveDayTime = props => {
                         setBookingDate(getPrevNextDay(true, bookingDate))
                         setReserve([])
                     }}>
-                        {translate("resources_page.tommorow", slovenian)}
+                        {translate("resources_page.tommorow")}
                         {" ->"}
                     </span>
                 </div>
@@ -147,21 +146,21 @@ const ReserveDayTime = props => {
                     }
                     if (busy.includes(i)) {
                         return <button className={`col btn-danger`} key={i} disabled>
-                            <CalenderTimeSlot buttonText={translate("resources_page.button.busy", slovenian)} style="txt-secondary" i={i} />
+                            <CalenderTimeSlot buttonText={translate("resources_page.button.busy")} style="txt-secondary" i={i} />
                         </button>
                     } else if (owned.includes(i)) {
                         return <button className={`col btn-primary`} key={i} disabled>
-                            <CalenderTimeSlot buttonText={translate("resources_page.button.owned", slovenian)} style="txt-secondary" i={i} />
+                            <CalenderTimeSlot buttonText={translate("resources_page.button.owned")} style="txt-secondary" i={i} />
                         </button>
                     } else if (reserve.includes(i)) {
                         return <button className={`col btn-info`} key={i}
                             onClick={() => handleTimeSelect(i)}>
-                            <CalenderTimeSlot buttonText={translate("resources_page.button.selected", slovenian)} style="" i={i} />
+                            <CalenderTimeSlot buttonText={translate("resources_page.button.selected")} style="" i={i} />
                         </button>
                     } else {
                         return <button className={`col btn-secondary`} key={i}
                             disabled={(new Date() > new Date(getDateTimeString(bookingDate, i)) || dayOfWeek === 6 || dayOfWeek === 0) ? true : false} onClick={() => handleTimeSelect(i)}>
-                            <CalenderTimeSlot buttonText={translate("resources_page.button.free", slovenian)} style="txt-secondary" i={i} />
+                            <CalenderTimeSlot buttonText={translate("resources_page.button.free")} style="txt-secondary" i={i} />
                         </button>
                     }
                 })}
@@ -169,7 +168,7 @@ const ReserveDayTime = props => {
             <div className='mt-5 row text-center'>
                 <div className="col">
                     <button className="btn bg-primary text-white" onClick={() => handleSubmit()} disabled={reserve.length === 0 ? true : false}>
-                        {translate("resources_page.button.reserve", slovenian)}
+                        {translate("resources_page.button.reserve")}
                     </button>
                 </div>
             </div>

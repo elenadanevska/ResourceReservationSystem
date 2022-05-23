@@ -8,26 +8,25 @@ import { translate } from '../helpers/Helpers';
 
 
 const Sidebar = props => {
-    let slovenian = JSON.parse(localStorage.getItem("user")).slovenian;
 
     let sidebar_items = [
         {
-            "display_name": translate("menu.reservations", slovenian),
+            "display_name": translate("menu.reservations"),
             "route": "/user/reservations",
             "icon": faList
         },
         {
-            "display_name": translate("menu.resources", slovenian),
+            "display_name": translate("menu.resources"),
             "route": "/user/resources",
             "icon": faPenToSquare
         },
         {
-            "display_name": translate("menu.history", slovenian),
+            "display_name": translate("menu.history"),
             "route": "/user/history",
             "icon": faHistory
         },
         {
-            "display_name": translate("menu.help", slovenian),
+            "display_name": translate("menu.help"),
             "route": "/user/help",
             "icon": faQuestionCircle
         },

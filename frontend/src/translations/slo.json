@@ -19,7 +19,10 @@
         "time": "Čas",
         "actions": "Akcije",
         "search": "Preiskaj rezervacije...",
-        "not_found": "Ni rezultatov"
+        "not_found": "Ni rezultatov",
+        "confirm_delete": "Ali ste prepričani, da želite preklicati to rezervacijo?",
+        "confirm_yes": "Ja",
+        "confirm_no": "Ne"
     },
     "resources_page": {
         "search": "Poiskaj po imenu",
@@ -33,7 +36,10 @@
         },
         "pick_date": "Izaberi datum",
         "tommorow": "Naslednji dan",
-        "yesterday": "Prejšni dan"
+        "yesterday": "Prejšni dan",
+        "select_group": "Skupina virov",
+        "select_all": "Izberi vse",
+        "note": "Opomba"
     },
     "history_page": {
         "from_date": "Od",
@@ -44,7 +50,7 @@
         "friSite": "Več o tej strani najdete na spletni strani Fakultete za računalništvo in informatiko, Univerze v Ljubljani",
         "questions": "Če imate kakršne koli težave ali vprašanja, nas lahko kontaktirate tudi preko spodnjega kontaktnega obrazca",
         "nameLabel": "Vaše ime",
-        "topicLabel": "Tema",
+        "topicLabel": "Zadeva",
         "messageLabel": "Vaše sporočilo",
         "contactFormTitle": "Kontaktiraj nas",
         "sendMessage": "Pošlji sporočilo"
@@ -56,7 +62,9 @@
         "groups": "Skupine",
         "email": "E-poštni naslov",
         "role": "Vloga",
-        "student": "Študent"
+        "student": "Študent",
+        "slovenian": "Slovenščina",
+        "english": "Angleščina"
     },
     "dropdown": {
         "profile": "Profil",

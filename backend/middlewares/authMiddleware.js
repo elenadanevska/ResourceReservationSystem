@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.js");
 const md5 = require('md5');
+var CryptoJS = require("crypto-js");
 
 exports.authMiddleware = function (adminOnly = false) {
     return async (req, res, next) => {
@@ -17,8 +18,10 @@ exports.authMiddleware = function (adminOnly = false) {
         }
         else if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
             try {
-                token = req.headers.authorization.split(' ')[1]
-                const verified = jwt.verify(token, process.env.JWT_SECRET);
+                token = req.headers.authorization.split(' ')[1];
+                var bytes = CryptoJS.AES.decrypt(token, process.env.JWT_SECRET);
+                var decryptedToken = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+                const verified = jwt.verify(decryptedToken, process.env.JWT_SECRET);
                 user = await User.findById(verified._id);
             } catch (error) {
                 console.log(error);

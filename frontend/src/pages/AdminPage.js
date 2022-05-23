@@ -17,7 +17,7 @@ const AdminPage = () => {
 
     useEffect(() => {
         let user_id = admin_user._id;
-        Axios.get(`http://localhost:3001/users/${user_id}`, getConfig(admin_user)).then((response) => {
+        Axios.get(`http://localhost:3001/users/${user_id}`, getConfig(admin_user.token)).then((response) => {
             setName(response.data.name);
             setSurname(response.data.surname);
             setEmail(response.data.email);
@@ -33,13 +33,13 @@ const AdminPage = () => {
     async function handleSubmit(event) {
         event.preventDefault();
         try {
-            await Axios.get(`http://localhost:3001/admins/generateApiKey`, getConfig(admin_user)).then((result) => {
+            await Axios.get(`http://localhost:3001/admins/generateApiKey`, getConfig(admin_user.token)).then((result) => {
                 setApiKey(result.data);
                 Axios.put(`http://localhost:3001/admins/generateApiKey/${admin_user._id}`, {
                     params: {
                         apiKey: result.data
                     }
-                }, getConfig(admin_user)).then((res) => {
+                }, getConfig(admin_user.token)).then((res) => {
                     console.log(res);
                 });
             });

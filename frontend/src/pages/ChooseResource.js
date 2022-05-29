@@ -16,18 +16,19 @@ class ChooseResource extends Component {
             searchString: "",
             user: JSON.parse(localStorage.getItem("user")),
         }
+        this.showResources = this.state.user.groups.length > 1 || this.state.user.isAdmin;
     }
 
     componentDidMount() {
         try {
             Axios.get("http://localhost:3001/resources", getConfig(this.state.user.token)).then((response) => {
                 this.setState({ resources: response.data });
-                if (this.state.user.groups.length > 1) {
+                if (this.showResources) {
                     let resourceOption = [{ value: "", label: translate("resources_page.select_all") }];
                     let uniqe = [];
                     response.data.map(resource => resource.groups.forEach(element => {
                         if (!uniqe.includes(element)) {
-                            if (this.state.user.groups.includes(element)) {
+                            if (this.showResources || this.state.user.groups.includes(element)) {
                                 resourceOption.push({ value: element, label: element });
                                 uniqe.push(element);
                             }
@@ -55,7 +56,7 @@ class ChooseResource extends Component {
                             });
                         }} />
                     </div>
-                    {this.state.user.groups.length > 1 &&
+                    {(this.showResources) &&
                         <Select
                             className="selectType"
                             placeholder="Select Type"
@@ -71,7 +72,7 @@ class ChooseResource extends Component {
                 </div>
                 <div className="row container">
                     {this.state.resources.map((value) => {
-                        if (value.groups.some(item => this.state.user.groups.includes(item))) {
+                        if (this.showResources || value.groups.some(item => this.state.user.groups.includes(item))) {
                             if (value.name.toLowerCase().includes(this.state.searchString)) {
                                 if (this.state.selectedGroup === "" || value.groups.includes(this.state.selectedGroup)) {
                                     return (

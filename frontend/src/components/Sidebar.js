@@ -8,6 +8,7 @@ import { translate } from '../helpers/Helpers';
 
 
 const Sidebar = props => {
+    const user = JSON.parse(localStorage.getItem("user"));
 
     let sidebar_items = [
         {
@@ -28,7 +29,8 @@ const Sidebar = props => {
         {
             "display_name": translate("menu.help"),
             "route": "/user/help",
-            "icon": faQuestionCircle
+            "icon": faQuestionCircle,
+            "class": user.isAdmin ? "hideColumn" : ""
         },
     ]
 
@@ -37,12 +39,14 @@ const Sidebar = props => {
             return <div className="row smallScreenMenu">
                 {
                     sidebar_items.map((item, index) => (
-                        <Link to={item.route} key={index} className="col col-md-3">
-                            <div className='navbarItem'>
-                                <FontAwesomeIcon icon={item.icon} />
-                                <span className='menuText'>{item.display_name}</span>
-                            </div>
-                        </Link>
+                        (item.route !== "/user/help" || !user.isAdmin) ?
+                            (<Link to={item.route} key={index} className="col col-md-3">
+                                <div className='navbarItem '>
+                                    <FontAwesomeIcon icon={item.icon} />
+                                    <span className='menuText'>{item.display_name}</span>
+                                </div>
+                            </Link>) : null
+
                     ))
                 }
             </div>
@@ -53,16 +57,17 @@ const Sidebar = props => {
                 </div>
                 {
                     sidebar_items.map((item, index) => (
-                        <Link to={item.route} key={index}>
-                            <div className="sidebarItem">
-                                <div className={`sidebarItemInner ${props.active}`}>
-                                    <FontAwesomeIcon icon={item.icon} />
-                                    <span className='sidebarItemInnerTitle'>
-                                        {item.display_name}
-                                    </span>
+                        (item.route !== "/user/help" || !user.isAdmin) ?
+                            (<Link to={item.route} key={index}>
+                                <div className="sidebarItem">
+                                    <div className={`sidebarItemInner ${props.active}`}>
+                                        <FontAwesomeIcon icon={item.icon} />
+                                        <span className='sidebarItemInnerTitle'>
+                                            {item.display_name}
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                        </Link>
+                            </Link>) : null
                     ))
                 }
             </div>

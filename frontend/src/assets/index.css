@@ -331,6 +331,10 @@ input {
     margin-top: 1%;
 }
 
+.hideColumn {
+    display: none
+}
+
 /*PROFILE*/
 
 .proLabels {
@@ -385,7 +389,8 @@ input {
 
 .copyIcon {
     top: -30px;
-    left: 180px;
+    right: 10px;
+    float: right;
     position: relative;
     color: #464e53;
     cursor: pointer;

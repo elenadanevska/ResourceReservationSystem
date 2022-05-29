@@ -40,3 +40,15 @@ export function getConfig(token) {
     }
     return config
 }
+
+export function getUser(token) {
+    Axios.get(`http://localhost:3001/users/getUserByToken`, {
+        params: {
+            token: token,
+        }
+    }, getConfig(token)).then((response) => {
+        return response;
+    }).catch(errors => {
+        console.error(errors);
+    });
+}

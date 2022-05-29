@@ -75,10 +75,21 @@ export default class App extends Component {
             } else {
                 return (
                     <BrowserRouter>
-                        <Routes>
-                            <Route path="/" element={<Navigate replace to="/adminpage" />} />
-                            <Route path="/adminpage" element={<AdminPage />} />
-                        </Routes>
+                        <div className="layout">
+                            <Sidebar classes="sidebar" />
+                            <div className="content">
+                                <TopNav />
+                                <div className="content-main">
+                                    <Routes>
+                                        <Route path='/user/reservations' exact element={<Reservations />} />
+                                        <Route path='/user/resources' element={<MakeReservation />} />
+                                        <Route path='/user/history' exact element={<History />} />
+                                        <Route path='/user/choose-time/:id' element={<ReserveDateTime />} />
+                                        <Route path="/adminpage" element={<AdminPage />} />
+                                    </Routes>
+                                </div>
+                            </div>
+                        </div>
                     </BrowserRouter>
                 );
             }

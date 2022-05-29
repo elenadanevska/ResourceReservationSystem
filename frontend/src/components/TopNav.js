@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from 'react-router-dom';
 import user_image from '../assets/images/userpng1.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOut, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faSignOut, faUserCircle, faKey } from '@fortawesome/free-solid-svg-icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "bootstrap/dist/js/bootstrap.min.js";
 import { useNavigate } from "react-router-dom";
@@ -29,6 +29,8 @@ export default function Topnav() {
         window.location.reload()
     }
 
+    let FirstLink = user.isAdmin ? <Link className="dropdown-item" to="/adminpage" ><FontAwesomeIcon icon={faKey} />    API Key</Link> :
+        <Link className="dropdown-item" to="/user/profile" ><FontAwesomeIcon icon={faUserCircle} />    {translate("dropdown.profile")}</Link>
     return (
         <div className='topnav'>
             <div className="customSearch"></div>
@@ -47,7 +49,7 @@ export default function Topnav() {
                             </div>
                         </Link>
                         <ul className="dropdown-menu dropdown-menu-light text-small shadow" aria-labelledby="dropdown">
-                            <Link className="dropdown-item" to="/user/profile" ><FontAwesomeIcon icon={faUserCircle} />    {translate("dropdown.profile")}</Link>
+                            {FirstLink}
                             <hr className="dropdown-divider" />
                             <button className="dropdown-item" onClick={handleLogout}><FontAwesomeIcon icon={faSignOut} />    {translate("dropdown.signout")}</button>
                         </ul>

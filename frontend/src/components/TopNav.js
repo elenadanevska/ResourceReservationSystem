@@ -9,19 +9,21 @@ import { useNavigate } from "react-router-dom";
 import { translate } from '../helpers/Helpers';
 import Sidebar from "./Sidebar";
 import Axios from "axios";
+import Cookies from 'js-cookie'
 
 
 export default function Topnav() {
 
     const navigate = useNavigate();
-    let user = JSON.parse(localStorage.getItem("user"));
+    let user = JSON.parse(Cookies.get("user"));
 
     async function handleLogout() {
         try {
             await Axios.post(`http://localhost:3001/users/signout`).then((res) => {
                 console.log("signing out...")
             });
-            localStorage.removeItem("user");
+            Cookies.remove('user')
+
             navigate("/login");
         } catch (error) {
             console.log(error);

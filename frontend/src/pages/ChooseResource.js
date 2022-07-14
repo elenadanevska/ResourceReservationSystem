@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import ResourceCard from "../components/ResourceCard";
 import Select from "react-select";
 import Axios from "axios";
-import { translate, getConfig } from '../helpers/Helpers';
+import { translate, getConfig, getCurrentUser } from '../helpers/Helpers';
 
 
 class ChooseResource extends Component {
@@ -14,7 +14,7 @@ class ChooseResource extends Component {
             resouceGroups: [],
             selectedGroup: "",
             searchString: "",
-            user: JSON.parse(localStorage.getItem("user")),
+            user: getCurrentUser(),
         }
         this.showResources = this.state.user.groups.length > 1 || this.state.user.isAdmin;
     }

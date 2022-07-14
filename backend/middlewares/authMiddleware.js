@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.js");
-const md5 = require('md5');
 var CryptoJS = require("crypto-js");
 
 exports.authMiddleware = function (adminOnly = false) {
@@ -9,8 +8,14 @@ exports.authMiddleware = function (adminOnly = false) {
         let user;
         let api_key = req.header('x-api-key');
         if (api_key) {
-            hased_api = md5(api_key)
-            user = await User.findOne({ apiKey: hased_api });
+            let keyParts = api_key.split(".")
+            user = await User.findOne({ 'apiKey.publicPart': "admin_fri_627f7988ffd149baf9c3b966" });
+            if (user) {
+                var decryptedSecret = CryptoJS.AES.decrypt(user.apiKey.secretPart, process.env.JWT_SECRET).toString(CryptoJS.enc.Utf8);
+                if (decryptedSecret != keyParts.join("", 1)) {
+                    return res.status(401).json({ error: "Authentication faild" });
+                }
+            }
         }
         else if (req.cookies.auth_token) {
             const decode = jwt.verify(req.cookies.auth_token, process.env.JWT_SECRET);

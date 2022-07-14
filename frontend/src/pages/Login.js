@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
+import Cookies from 'js-cookie'
 
 const ErrorMessage = ({ variant = "danger", children }) => {
     return (
@@ -47,7 +48,7 @@ export default function Login(props) {
                     token: res.data.token,
                     isAdmin: res.data.isAdmin
                 }
-                localStorage.setItem("user", JSON.stringify(u))
+                Cookies.set("user", JSON.stringify(u))
                 props.login({ isLogin: true, token: u.token, isAdmin: u.isAdmin })
                 if (!u.isAdmin) {
                     navigate("/user/reservations");

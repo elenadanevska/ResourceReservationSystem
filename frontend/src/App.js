@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Axios from "axios";
 import "./assets/grid.css";
 import "./assets/index.css";
+import Cookies from 'js-cookie'
 
 export default class App extends Component {
     constructor(props) {
@@ -33,8 +34,8 @@ export default class App extends Component {
     }
 
     checkLoggedIn() {
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (user) {
+        if (Cookies.get('user')) {
+            const user = JSON.parse(Cookies.get('user'))
             this.setState({ isLogin: true, token: user.token, isAdmin: user.isAdmin });
             Axios.post('http://localhost:3001/users/tokenIsValid', null, { headers: { "x-auth-token": user.token } }).then((response) => {
                 this.setState({ validToken: response.data });

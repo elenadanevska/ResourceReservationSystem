@@ -1,9 +1,10 @@
 import slo from "../translations/slo.json";
 import en from "../translations/en.json";
 import Axios from "axios";
+import Cookies from 'js-cookie'
 
 export function translate(jsonPath) {
-    let user = JSON.parse(localStorage.getItem("user"));
+    let user = JSON.parse(Cookies.get("user"));
     let translationFile = user.slovenian ? slo : en;
     return eval("translationFile." + jsonPath)
 }
@@ -41,14 +42,16 @@ export function getConfig(token) {
     return config
 }
 
-export function getUser(token) {
-    Axios.get(`http://localhost:3001/users/getUserByToken`, {
-        params: {
-            token: token,
-        }
-    }, getConfig(token)).then((response) => {
-        return response;
-    }).catch(errors => {
-        console.error(errors);
-    });
+export function getCurrentUser() {
+    let user = JSON.parse(Cookies.get("user"));
+    /* Axios.get(`http://localhost:3001/users/getUserByToken`, {
+         params: {
+             token: user.token,
+         }
+     }, getConfig(user.token)).then((response) => {
+         return response;
+     }).catch(errors => {
+         console.error(errors);
+     });*/
+    return user;
 }

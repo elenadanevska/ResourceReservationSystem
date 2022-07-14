@@ -7,9 +7,8 @@ const generateApiKey = require('generate-api-key');
 
 //generates an apiKey for the admin
 
-router.get("/generateApiKey", (req, res) => {
-    let apiKey = generateApiKey({ method: 'uuidv4', prefix: 'admin_fri' });
-    console.log(apiKey)
+router.get("/generateApiKey/:userId", (req, res) => {
+    let apiKey = generateApiKey({ method: 'uuidv4', prefix: 'admin_fri_' + req.params.userId });
     res.send(apiKey)
 });
 
@@ -22,14 +21,14 @@ router.put("/generateApiKey/:userId", authMiddleware(true), async (req, res) => 
             if (err) {
                 return next(err);
             } else {
-                user.apiKey = req.body.params.apiKey;
-                user.save(function (err, user) {
-                    if (err) {
-                        res.status(500).send("Error: ", err);
-                    } else {
-                        res.status(201).json({ sucess: true, message: "The api key has been updated sucessfully" })
-                    }
+                let entireKey = req.body.params.apiKey
+                user.apiKey = { publicPart: "", secretPart: entireKey }
+                user.save().then(() => {
+                    console.log("Success");
                 })
+                    .catch((reservation_err) => {
+                        console.log(reservation_err);
+                    })
             }
         });
     } catch (error) {

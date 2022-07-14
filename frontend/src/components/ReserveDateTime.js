@@ -4,7 +4,7 @@ import Axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useParams } from 'react-router-dom';
-import { translate, getDateTimeString, getPrevNextDay, getConfig } from '../helpers/Helpers';
+import { translate, getDateTimeString, getPrevNextDay, getConfig, getCurrentUser } from '../helpers/Helpers';
 
 
 const ReserveDayTime = props => {
@@ -14,7 +14,7 @@ const ReserveDayTime = props => {
     const [reserve, setReserve] = useState([]);
     const [selected, setSelected] = useState([]);
     const [resourceName, setResourceName] = useState("")
-    const current_user = JSON.parse(localStorage.getItem("user"));
+    const current_user = getCurrentUser();
     const { id } = useParams();
     let times = [
         "08:00 - 08:30", "08:30 - 09:00", "09:00 - 09:30", "09:30 - 10:00", "10:00 - 10:30",

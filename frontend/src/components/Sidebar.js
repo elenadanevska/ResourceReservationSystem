@@ -4,11 +4,11 @@ import logo from '../assets/images/unilj.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faList, faHistory, faQuestionCircle, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import { translate } from '../helpers/Helpers';
+import { translate, getCurrentUser } from '../helpers/Helpers';
 
 
 const Sidebar = props => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = getCurrentUser();
 
     let sidebar_items = [
         {

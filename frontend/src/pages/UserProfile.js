@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import user_image from '../assets/images/userpng1.png';
 import Select from "react-select";
-import { translate } from '../helpers/Helpers';
+import { translate, getCurrentUser } from '../helpers/Helpers';
 import Axios from "axios";
+import Cookies from 'js-cookie'
 
 const UserProfile = () => {
-    const current_user = JSON.parse(localStorage.getItem("user"));
+    const current_user = getCurrentUser();
     const [languageChanged, setLanguageChanged] = useState(false);
     const [slovenian, setSlovenian] = useState(current_user.slovenian);
     const languageOptions = [
@@ -32,7 +33,7 @@ const UserProfile = () => {
             setLanguageChanged(!languageChanged);
             window.location.reload();
             try {
-                localStorage.setItem("user", JSON.stringify(current_user));
+                Cookies.set("user", JSON.stringify(current_user));
                 console.log(current_user);
                 Axios.put(`http://localhost:3001/users/update/${current_user._id}`, { slovenian: current_user.slovenian }).then((response) => {
                     console.log(response);

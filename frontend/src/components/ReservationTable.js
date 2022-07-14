@@ -3,7 +3,7 @@ import Axios from "axios";
 import Table from "react-bootstrap/Table";
 import DeleteButton from '../components/buttons/DeleteButton';
 import ShowButton from "../components/buttons/ShowButton";
-import { translate, cmp, cutDate, getConfig } from '../helpers/Helpers';
+import { translate, cmp, cutDate, getConfig, getCurrentUser } from '../helpers/Helpers';
 
 const ReservationTable = (props) => {
 
@@ -11,49 +11,11 @@ const ReservationTable = (props) => {
     const [resources, setResources] = useState({});
     const [sortDateUp, setSortDateUp] = useState(true);
     const [sortResourceUp, setSortResourceUp] = useState(true);
-    const user = JSON.parse(localStorage.getItem("user"));
-    const user_token = user.token;
+    const user = getCurrentUser()
     let skipped = 0;
 
-    /*    useEffect(() => {
-            const config = getConfig(user_token);
-            Axios.get(`http://localhost:3001/users/getUserByToken`, {
-                params: {
-                    token: user_token,
-                }
-            }, getConfig(user_token)).then((response) => {
-                user = response;
-                if (!user.isAdmin) {
-                    Axios.get(`http://localhost:3001/reservations/user/${user._id}`, config).then((response) => {
-                        let data = response.data;
-                        setReservations(data);
-                        data.forEach(res => {
-                            Axios.get(`http://localhost:3001/resources/${res.resource}`, config).then((r) => {
-                                let newResource = {};
-                                newResource[r.data._id] = r.data.name;
-                                setResources(resources => ({ ...resources, ...newResource }))
-                            });
-                        })
-                    });
-                } else {
-                    Axios.get(`http://localhost:3001/reservations`, config).then((response) => {
-                        let data = response.data;
-                        setReservations(data);
-                        data.forEach(res => {
-                            Axios.get(`http://localhost:3001/resources/${res.resource}`, config).then((r) => {
-                                let newResource = {};
-                                newResource[r.data._id] = r.data.name;
-                                setResources(resources => ({ ...resources, ...newResource }))
-                            });
-                        })
-                    });
-    
-                }
-            })
-        }, []);
-    */
     useEffect(() => {
-        const config = getConfig(user_token);
+        const config = getConfig(user.token);
         if (!user.isAdmin) {
             Axios.get(`http://localhost:3001/reservations/user/${user._id}`, config).then((response) => {
                 let data = response.data;

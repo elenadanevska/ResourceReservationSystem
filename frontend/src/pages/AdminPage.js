@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Axios from "axios";
-import { getConfig } from '../helpers/Helpers';
+import { getConfig, getCurrentUser } from '../helpers/Helpers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy, faCheck } from '@fortawesome/free-solid-svg-icons';
 
@@ -10,7 +10,7 @@ const AdminPage = () => {
     const [email, setEmail] = useState("");
     const [apiKey, setApiKey] = useState("");
     const [icon, setIcon] = useState(faCopy)
-    const admin_user = JSON.parse(localStorage.getItem("user"));
+    const admin_user = getCurrentUser();
     let copyText = "Copy api key"
 
     useEffect(() => {
@@ -22,7 +22,7 @@ const AdminPage = () => {
             let aKey = response.data['apiKey']
 
             if (aKey) {
-                setApiKey(aKey);
+                setApiKey(aKey.publicPart + "." + "{secret part}");
             }
         }).catch(errors => {
             console.error(errors);
@@ -32,7 +32,7 @@ const AdminPage = () => {
     async function handleSubmit(event) {
         event.preventDefault();
         try {
-            await Axios.get(`http://localhost:3001/admins/generateApiKey`, getConfig(admin_user.token)).then((result) => {
+            await Axios.get(`http://localhost:3001/admins/generateApiKey/${admin_user._id}`, getConfig(admin_user.token)).then((result) => {
                 setApiKey(result.data);
                 Axios.put(`http://localhost:3001/admins/generateApiKey/${admin_user._id}`, {
                     params: {

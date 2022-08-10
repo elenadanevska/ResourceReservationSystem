@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { translate, getConfig, getCurrentUser } from '../helpers/Helpers';
-import Axios from "axios";
+import { translate, getCurrentUser } from '../helpers/Helpers';
+import emailjs from '@emailjs/browser';
 
 const ContactForm = (props) => {
-    const [name, setName] = useState("")
-    const [subject, setSubject] = useState("")
-    const [message, setMessage] = useState("")
+    const form = useRef();
 
     async function handleSend(e) {
         try {
             e.preventDefault();
-            let email = props.user.email
-            console.log(name + " " + subject + " " + message)
-            await Axios.post(`http://localhost:3001/users/sendEmail`, { name, email, subject, message }, getConfig(props.user.token))
+            emailjs.sendForm('service_e39bnph', 'template_275yx69', e.target, '77DcNBN3o-UmPvOD5')
+                .then((result) => {
+                    console.log(result.text);
+                }, (error) => {
+                    console.log(error.text);
+                });
+            e.target.reset()
         } catch (error) {
             console.error(error)
         }
@@ -21,20 +23,20 @@ const ContactForm = (props) => {
 
     let inputClass = "px-3 py-3 placeholder-gray-400 text-gray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none w-100"
     return (
-        <form className='text-center'>
-            <h5>{translate("help_page.contactFormTitle")}</h5>
+        <form ref={form} onSubmit={handleSend}>
             <div className="mb-3 pt-0">
-                <input type="text" placeholder={translate("help_page.nameLabel")} name="name" onChange={(e) => setName("elena")} className={inputClass} required />
+                <input type="text" placeholder={translate("help_page.nameLabel")} name="from_name" className={inputClass} required />
             </div>
             <div className="mb-3 pt-0">
-                <input type="text" placeholder={translate("help_page.topicLabel")} name="subject" onChange={(e) => setSubject("da")} className={inputClass} required />
+                <input type="text" placeholder={translate("help_page.topicLabel")} name="subject" className={inputClass} required />
             </div>
             <div className="mb-3 pt-0">
-                <textarea placeholder={translate("help_page.messageLabel")} name="message" onChange={(e) => setMessage("fsdfs")} rows={5} className={inputClass} required />
+                <textarea placeholder={translate("help_page.messageLabel")} name="message" rows={5} className={inputClass} required />
             </div>
             <div className="mb-3 pt-0">
-                <button className="btn btn-primary text-white text-sm shadow-none" onClick={handleSend} type="submit"> {translate("help_page.sendMessage")} </button>
+                <button className="btn btn-primary text-white text-sm shadow-none" type="submit"> {translate("help_page.sendMessage")} </button>
             </div>
+            <input type="text" value={props.user.email} name="to_email" className="d-none" required />
         </form>
     );
 }

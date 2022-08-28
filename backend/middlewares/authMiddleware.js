@@ -10,11 +10,13 @@ exports.authMiddleware = function (adminOnly = false) {
         if (api_key) {
             let keyParts = api_key.split(".")
             user = await User.findOne({ 'apiKey.publicPart': "admin_fri_627f7988ffd149baf9c3b966" }); //change public part?
-            if (user) {
+            if (user && user.isAdmin) {
                 var decryptedSecret = CryptoJS.AES.decrypt(user.apiKey.secretPart, process.env.JWT_SECRET).toString(CryptoJS.enc.Utf8);
                 if (decryptedSecret != keyParts.join("", 1)) {
                     return res.status(401).json({ error: "Authentication faild" });
                 }
+            } else {
+                return res.status(401).json({ error: "Authentication faild" });
             }
         }
         else if (req.cookies.auth_token) {

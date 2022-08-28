@@ -66,6 +66,7 @@ export default class App extends Component {
                                         <Route path='/user/help' element={<HelpUser />} />
                                         <Route path='/user/profile' exact element={<UserProfile />} />
                                         <Route path='/user/choose-time/:id' element={<ReserveDateTime />} />
+                                        <Route path="/" element={<Navigate replace to="/user/reservations" />} />
                                         <Route path="/login" element={<Navigate replace to="/user/reservations" />} />
                                     </Routes>
                                 </div>
@@ -99,7 +100,7 @@ export default class App extends Component {
                 <BrowserRouter>
                     <Routes>
                         <Route path="/login" exact element={<Login login={this.login} />} />
-                        <Route path="/" element={<Navigate replace to="/login" />} />
+                        <Route path="/" element={<Navigate to="/login" />} />
                     </Routes>
                 </BrowserRouter>
             );

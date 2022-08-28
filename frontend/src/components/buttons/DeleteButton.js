@@ -15,13 +15,20 @@ function DeleteButton(props) {
 
 
     const deleteReservation = (id) => {
-        Axios.delete(`http://localhost:3001/reservations/${id}`, getConfig(props.user.token)).then((response) => {
+        Axios.delete(`http://localhost:3001/reservations/${id}/${props.user._id}`, getConfig(props.user.token)).then((response) => {
             console.log(response);
             if (response.status === 200) {
-                Axios.get("http://localhost:3001/reservations", getConfig(props.user.token))
-                    .then((response) => {
-                        props.setRes(response.data);
-                    });
+                if (props.user.isAdmin) {
+                    Axios.get("http://localhost:3001/reservations", getConfig(props.user.token))
+                        .then((response) => {
+                            props.setRes(response.data);
+                        });
+                } else {
+                    Axios.get(`http://localhost:3001/reservations/user/${props.user._id}`, getConfig(props.user.token))
+                        .then((response) => {
+                            props.setRes(response.data);
+                        });
+                }
                 console.log("reseration deleted")
             }
         });

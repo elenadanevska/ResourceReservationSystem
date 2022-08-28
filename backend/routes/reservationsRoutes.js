@@ -6,7 +6,7 @@ const User = require("../models/user");
 const { authMiddleware } = require("../middlewares/authMiddleware");
 
 //get all reservations 
-router.get("/", authMiddleware(), (req, res) => {
+router.get("/", authMiddleware(true), (req, res) => {
     Reservation.find().sort({ date: -1, time: -1 })
         .then((result) => {
             res.send(result);
@@ -66,7 +66,7 @@ router.post("/:id", authMiddleware(), (req, res) => {
                 });
                 reservation.save()
                     .then(() => {
-                        console.log("Success");
+                        console.log("The reservation was created")
                     })
                     .catch((reservation_err) => {
                         console.log(reservation_err);
@@ -90,8 +90,30 @@ router.put("/:id", authMiddleware(true), (req, res) => {
     })
 })
 
-//delete reservation with specific id
-router.delete("/:id", authMiddleware(), (req, res) => {
+//delete reservation with specific id, given current userId
+router.delete("/:id/:userId", authMiddleware(), (req, res) => {
+    const id = req.params.id;
+    const userId = req.params.userId;
+    Reservation.findById(id)
+        .then((result) => {
+            if (userId.trim() == result.user.toString()) {
+                Reservation.deleteOne({ _id: result._id }).then((r) => {
+                    console.log("Reservation with id " + id + " has been successfully deleted");
+                    res.send(r);
+                }).catch(
+                    (err) => console.log(err)
+                )
+            } else {
+                res.status(401).json({ sucess: false, error: "Error occured. The user can delete only his own reservations" })
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+});
+
+//delete reservation with specific id, admin only
+router.delete("/:id/", authMiddleware(true), (req, res) => {
     const id = req.params.id;
     Reservation.findByIdAndDelete(id)
         .then((result) => {
@@ -101,7 +123,6 @@ router.delete("/:id", authMiddleware(), (req, res) => {
         .catch((err) => {
             console.log(err);
         })
-
 });
 
 module.exports = router;

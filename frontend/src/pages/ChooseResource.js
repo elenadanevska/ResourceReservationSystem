@@ -3,6 +3,8 @@ import ResourceCard from "../components/ResourceCard";
 import Select from "react-select";
 import Axios from "axios";
 import { translate, getConfig, getCurrentUser } from '../helpers/Helpers';
+import { faTrash, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 class ChooseResource extends Component {
@@ -77,7 +79,7 @@ class ChooseResource extends Component {
                                 if (this.state.selectedGroup === "" || value.groups.includes(this.state.selectedGroup)) {
                                     return (
                                         <div className="col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-3" key={value.name}>
-                                            <ResourceCard name={value.name} note={value.note} description={value.describtion} image={value.image} id={value._id} />
+                                            <ResourceCard name={value.name} note={value.note} description={value.describtion} image={value.image_name} id={value._id} />
                                         </div>);
                                 }
                             }

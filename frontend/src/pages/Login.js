@@ -25,6 +25,10 @@ export default function Login(props) {
     const [passwordShown, setPasswordShown] = useState(false);
     const navigate = useNavigate();
 
+    const openInNewTab = url => {
+        window.open(url, '_blank', 'noopener,noreferrer');
+    };
+
     function validateForm() {
         return email.length > 0 && password.length > 0;
     }
@@ -106,7 +110,9 @@ export default function Login(props) {
                     </div>
                 </div>
                 <div id="formFooter">
-                    <a className="underlineHover" href="#">Learn more</a>
+                    <button className="btn btn-link" onClick={() => openInNewTab('//fri.uni-lj.si/sl/studij')}>
+                        Learn more
+                    </button>
                 </div>
             </div>
         </div>

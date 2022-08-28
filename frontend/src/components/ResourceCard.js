@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { Link } from 'react-router-dom';
-import projector from '../assets/images/projector.jpg';
+import noimage from '../assets/images/noimage.png';
 import { translate } from '../helpers/Helpers';
 
 function ResourceCard(props) {
@@ -11,14 +11,14 @@ function ResourceCard(props) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
+  let imagePath = props.image ? `/images/${props.image}` : noimage
   let cardLink = <Link to={`/user/choose-time/${props.id}`} className="btn btn-primary actionButtonsCard">{translate("resources_page.button.reserve")}</Link>
 
 
   return (
     <div className="card">
       <Button variant="secondary" onClick={handleShow}>
-        <img className="card-img-top" src={projector} style={{ height: "200px" }} alt="resource_image" />
+        <img className="card-img-top" src={imagePath} style={{ height: "200px" }} alt="resource_image" />
         <h4 className="card-title">{props.name}</h4>
       </Button>
       <Modal
@@ -34,7 +34,7 @@ function ResourceCard(props) {
         <Modal.Body>
           <div>
             <div className="text-center bg-secondary mb-3">
-              <img className="img-fluid" src={props.image ? props.image : projector} alt="G1s" style={{ height: "220px", width: "250px" }} />
+              <img className="img-fluid" src={imagePath} alt="G1s" style={{ height: "220px", width: "250px" }} />
             </div>
             <div className="container">
               {props.description}

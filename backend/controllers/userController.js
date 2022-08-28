@@ -79,25 +79,30 @@ const updateUser = asyncHandler((async (req, res) => {
 const authUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     try {
-        const user = await User.findOne({ email });
-        if (!user) {
-            res.status(401).json({ sucess: false, error: "User with this email does not exist" });
-        } else {
-            if (await user.matchPassword(password)) {
-                const token = generateToken(user._id);
-                res.cookie("auth_token", token, { httpOnly: true });
-                res.status(201).json({
-                    _id: user._id,
-                    name: user.name,
-                    surname: user.surname,
-                    email: user.email,
-                    groups: user.groups,
-                    slovenian: user.slovenian,
-                    token: CryptoJS.AES.encrypt(JSON.stringify(token), process.env.JWT_SECRET).toString(),
-                    isAdmin: user.isAdmin
-                });
+        if (!email || !password) {
+            res.status(401).json({ sucess: false, error: "Please enter email and password" });
+        }
+        else {
+            const user = await User.findOne({ email });
+            if (!user) {
+                res.status(401).json({ sucess: false, error: "User with this email does not exist" });
             } else {
-                res.status(401).json({ sucess: false, error: "Invalid email or password" });
+                if (await user.matchPassword(password)) {
+                    const token = generateToken(user._id);
+                    res.cookie("auth_token", token, { httpOnly: true });
+                    res.status(201).json({
+                        _id: user._id,
+                        name: user.name,
+                        surname: user.surname,
+                        email: user.email,
+                        groups: user.groups,
+                        slovenian: user.slovenian,
+                        token: CryptoJS.AES.encrypt(JSON.stringify(token), process.env.JWT_SECRET).toString(),
+                        isAdmin: user.isAdmin
+                    });
+                } else {
+
+                } res.status(401).json({ sucess: false, error: "Invalid email or password" });
             }
         }
     } catch (error) {

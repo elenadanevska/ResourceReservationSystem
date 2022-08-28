@@ -1,6 +1,5 @@
 import slo from "../translations/slo.json";
 import en from "../translations/en.json";
-import Axios from "axios";
 import Cookies from 'js-cookie'
 
 export function translate(jsonPath) {
@@ -44,14 +43,5 @@ export function getConfig(token) {
 
 export function getCurrentUser() {
     let user = JSON.parse(Cookies.get("user"));
-    /* Axios.get(`http://localhost:3001/users/getUserByToken`, {
-         params: {
-             token: user.token,
-         }
-     }, getConfig(user.token)).then((response) => {
-         return response;
-     }).catch(errors => {
-         console.error(errors);
-     });*/
     return user;
 }

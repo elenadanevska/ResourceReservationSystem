@@ -52,8 +52,11 @@ router.get("/:id", (req, res) => {
 //new reservation, given resource id and user
 router.post("/:id", authMiddleware(), (req, res) => {
     const resourceId = req.params.id;
+    console.log(req.body.params.date.toString())
     let exactDate = req.body.params.date.toString().substring(0, 10) + "Z"
+    console.log(exactDate);
     const date = new Date(exactDate);
+    console.log(date);
     const userId = req.body.params.userId;
     User.findById(userId).then((current_user) => {
         Resource.findById(resourceId).then((found_resource) => {
@@ -113,12 +116,25 @@ router.delete("/:id/:userId", authMiddleware(), (req, res) => {
 });
 
 //delete reservation with specific id, admin only
-router.delete("/:id/", authMiddleware(true), (req, res) => {
+router.delete("/:id", authMiddleware(true), (req, res) => {
     const id = req.params.id;
     Reservation.findByIdAndDelete(id)
         .then((result) => {
             res.send(result);
             console.log("Reservation with id " + id + " has been successfully deleted");
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+});
+
+//delete all the reservations
+router.delete("/", authMiddleware(true), (req, res) => {
+    const id = req.params.id;
+    Reservation.deleteMany({})
+        .then((result) => {
+            res.send(result);
+            console.log("All the reservations were removed");
         })
         .catch((err) => {
             console.log(err);

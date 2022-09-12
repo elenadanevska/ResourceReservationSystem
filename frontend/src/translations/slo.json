@@ -1,7 +1,7 @@
 {
     "menu": {
         "reservations": "Rezervacije",
-        "resources": "Izaberi Resors",
+        "resources": "Izaberi Vir",
         "history": "Zgodovina",
         "help": "Pomoč"
     },
@@ -14,7 +14,7 @@
         "profile": "Profil"
     },
     "reservations_page": {
-        "resource_name": "Ime Resorsa",
+        "resource_name": "Ime Vira",
         "date": "Datum",
         "time": "Čas",
         "actions": "Akcije",
@@ -38,7 +38,7 @@
         "tommorow": "Naslednji dan",
         "yesterday": "Prejšni dan",
         "select_group": "Skupina virov",
-        "select_all": "Izberi vse",
+        "select_all": "Izaberi vse",
         "note": "Opomba"
     },
     "history_page": {

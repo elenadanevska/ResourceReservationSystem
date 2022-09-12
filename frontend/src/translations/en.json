@@ -35,8 +35,8 @@
             "busy": "Busy"
         },
         "pick_date": "Pick a date",
-        "tommorow": "Tommorow",
-        "yesterday": "Yesterday",
+        "tommorow": "Next day",
+        "yesterday": "Previous day",
         "select_group": "Select resource group",
         "select_all": "Select all",
         "note": "Note"

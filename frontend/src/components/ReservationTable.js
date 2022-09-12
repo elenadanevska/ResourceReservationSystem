@@ -74,7 +74,8 @@ const ReservationTable = (props) => {
             return check_date >= dateOne && check_date <= dateTwo
         } else {
             if (hours && minutes) {
-                return (new Date(dateOne) >= new Date(check_date).setHours(hours, minutes, 0));
+                console.log(hours + " " + minutes)
+                return (new Date(dateOne).setHours(hours, minutes, 0) >= new Date(check_date));
             }
             return (new Date(dateOne) >= check_date);
         }

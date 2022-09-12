@@ -3,8 +3,6 @@ import ResourceCard from "../components/ResourceCard";
 import Select from "react-select";
 import Axios from "axios";
 import { translate, getConfig, getCurrentUser } from '../helpers/Helpers';
-import { faTrash, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 class ChooseResource extends Component {
@@ -30,9 +28,9 @@ class ChooseResource extends Component {
                     let uniqe = [];
                     response.data.map(resource => resource.groups.forEach(element => {
                         if (!uniqe.includes(element)) {
-                            if (this.showResources || this.state.user.groups.includes(element)) {
+                            if (this.showResources && this.state.user.groups.includes(element)) {
                                 resourceOption.push({ value: element, label: element });
-                                uniqe.push(element);
+                                uniqe.push(element);;
                             }
                         }
                     }))
